@@ -6,17 +6,16 @@ import (
 )
 
 type Connection struct {
+	orm.ModelBase
 	ID                               string `json:"_id",bson:"_id"`
 	Driver, Host, UserName, Password string
 	Settings                         toolkit.M
 }
 
-var ctxConn *orm.DataContext
+func (c *Connection) TableName() string {
+	return "connections"
+}
 
-func CtxConnection() *orm.DataContext {
-	if ctxConn == nil {
-		c, _ := getConnection(&Connection{})
-		ctxConn = orm.New(c)
-	}
-	return ctxConn
+func (c *Connection) RecordID() interface{} {
+	return c.ID
 }

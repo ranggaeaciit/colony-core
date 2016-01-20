@@ -3,7 +3,7 @@ package colonycore
 import (
 	"errors"
 	"github.com/eaciit/dbox"
-	_ "github.com/eaciit/dbox/dbc/json"
+	_ "github.com/eaciit/dbox/dbc/jsons"
 	//"github.com/eaciit/orm/v1"
 	"github.com/eaciit/toolkit"
 	"os"
@@ -30,13 +30,13 @@ func getJsonFilePath(o interface{}) string {
 	return filepath.Join(ConfigPath, fn)
 }
 
-func getConnection(o interface{}) (dbox.IConnection, error) {
+func getConnection() (dbox.IConnection, error) {
 	if e := validateConfig(); e != nil {
 		return nil, errors.New("gocore.GetConnection: " + e.Error())
 	}
 
-	jsonpath := getJsonFilePath(o)
-	c, e := dbox.NewConnection("json", &dbox.ConnectionInfo{jsonpath, "", "", "", toolkit.M{}.Set("newfile", true)})
+	//jsonpath := getJsonFilePath(o)
+	c, e := dbox.NewConnection("jsons", &dbox.ConnectionInfo{ConfigPath, "", "", "", toolkit.M{}.Set("newfile", true)})
 	if e != nil {
 		return nil, errors.New("gocore.GetConnection: " + e.Error())
 	}

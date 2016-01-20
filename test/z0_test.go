@@ -10,32 +10,33 @@ import (
 	"testing"
 )
 
+var e error
+
 func TestSaveApp(t *testing.T) {
 	wd, _ := os.Getwd()
 	colonycore.ConfigPath = filepath.Join(wd, "../config")
-
-	appn := colonycore.CtxApplication().NewModel(&colonycore.Application{}).(*colonycore.Application)
-	appn.ID = "test"
-	appn.Enable = true
-	//toolkit.Printf("ID of new appn: %s\n", toolkit.Id(appn))
-
-	e := colonycore.CtxApplication().Save(appn)
-	if e != nil {
-		t.Errorf("Save Appn: " + e.Error())
+	for i := 1; i <= 5; i++ {
+		appn := new(colonycore.Application)
+		appn.ID = toolkit.Sprintf("appn%d", i)
+		appn.Enable = true
+		e = colonycore.Save(appn)
+		if e != nil {
+			t.Fatalf("Save %s fail: %s", appn.ID, e.Error())
+		}
 	}
 }
 
 func TestLoadApp(t *testing.T) {
 	//t.Skip()
 	apps := []colonycore.Application{}
-	c, e := colonycore.CtxApplication().Find(&colonycore.Application{}, nil)
+	c, e = colonycore.Find(new(colonycore.Application), nil)
 	if e != nil {
-		t.Errorf("Load appn:" + e.Error())
+		t.Errorf("Load appn fail:" + e.Error())
 		return
 	}
-	e = c.Fetch(&apps, 0, false)
+	e = c.Fetch(apps, 0, false)
 	if e != nil {
-		t.Errorf("Load appn: fetch " + e.Error())
+		t.Error("Fetching appn fail:" + e.Error())
 	}
-	toolkit.Printf("Data:\n%v\n", toolkit.JsonString(apps))
+	toolkit.Printf("Applications: %s\n", toolkit.JsonString(apps))
 }

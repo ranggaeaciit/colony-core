@@ -6,10 +6,19 @@ import (
 )
 
 type DataSource struct {
+	orm.ModelBase
 	ID           string `json:"_id",bson:"_id"`
 	ConnectionID string
 	QueryInfo    toolkit.M
 	MetaData     map[string]*FieldInfo
+}
+
+func (ds *DataSource) TableName() string {
+	return "datasources"
+}
+
+func (ds *DataSource) RecordID() interface{} {
+	return ds.ID
 }
 
 type FieldInfo struct {
@@ -21,26 +30,17 @@ type FieldInfo struct {
 }
 
 type Lookup struct {
+	orm.ModelBase
 	ID                    string
 	DataSourceID          string
 	IDField, DisplayField string
 	LookupFields          []string
 }
 
-var ctxDs, ctxLookup *orm.DataContext
-
-func CtxDataSource() *orm.DataContext {
-	if ctxDs == nil {
-		c, _ := getConnection(&DataSource{})
-		ctxDs = orm.New(c)
-	}
-	return ctxDs
+func (l *Lookup) TableName() string {
+	return "lookups"
 }
 
-func CtxLookup() *orm.DataContext {
-	if CtxLookup == nil {
-		c, _ := getConnection(&Lookup{})
-		ctxLookup = orm.New(c)
-	}
-	return ctxLookup
+func (l *Lookup) RecordID() interface{} {
+	return l.ID
 }

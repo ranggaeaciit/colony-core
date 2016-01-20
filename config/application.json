@@ -1,14 +1,6 @@
 [
   {
-    "Enable": true,
-    "_id": "test"
-  },
-  {
-    "Enable": true,
-    "_id": "test"
-  },
-  {
-    "Enable": true,
-    "_id": "test"
+    "Enable": false,
+    "_id": "manager"
   }
 ]

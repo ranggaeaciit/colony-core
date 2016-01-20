@@ -14,12 +14,6 @@ func (a *Application) TableName() string {
 	return "applications"
 }
 
-var ctxAppn *orm.DataContext
-
-func CtxApplication() *orm.DataContext {
-	if ctxAppn == nil {
-		c, _ := getConnection(&Application{})
-		ctxAppn = orm.New(c)
-	}
-	return ctxAppn
+func (a *Application) RecordID() interface{} {
+	return a.ID
 }
