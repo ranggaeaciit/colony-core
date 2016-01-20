@@ -24,17 +24,29 @@ func TestSaveApp(t *testing.T) {
 			t.Fatalf("Save %s fail: %s", appn.ID, e.Error())
 		}
 	}
+
+	appn := new(colonycore.Application)
+	e := colonycore.Get(appn, "appn5")
+	if e != nil {
+		t.Fatal(e)
+	}
+
+	appn.ID = "appn3"
+	e = colonycore.Delete(appn)
+	if e != nil {
+		t.Fatal(e)
+	}
 }
 
 func TestLoadApp(t *testing.T) {
 	//t.Skip()
 	apps := []colonycore.Application{}
-	c, e = colonycore.Find(new(colonycore.Application), nil)
+	c, e := colonycore.Find(new(colonycore.Application), nil)
 	if e != nil {
 		t.Errorf("Load appn fail:" + e.Error())
 		return
 	}
-	e = c.Fetch(apps, 0, false)
+	e = c.Fetch(&apps, 0, false)
 	if e != nil {
 		t.Error("Fetching appn fail:" + e.Error())
 	}

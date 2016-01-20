@@ -5,9 +5,9 @@ import (
 )
 
 type Application struct {
-	orm.ModelBase
-	ID     string `json:"_id"`
-	Enable bool
+	orm.ModelBase `json:"-"`
+	ID            string `json:"_id"`
+	Enable        bool
 }
 
 func (a *Application) TableName() string {
