@@ -2,8 +2,8 @@ package gocoretest
 
 import (
 	//"fmt"
-
 	"github.com/eaciit/colony-core/v0"
+	"github.com/eaciit/dbox"
 	"github.com/eaciit/toolkit"
 	"os"
 	"path/filepath"
@@ -41,7 +41,7 @@ func TestSaveApp(t *testing.T) {
 func TestLoadApp(t *testing.T) {
 	//t.Skip()
 	apps := []colonycore.Application{}
-	c, e := colonycore.Find(new(colonycore.Application), nil)
+	c, e := colonycore.Find(new(colonycore.Application), dbox.Lte("_id", "appn2"))
 	if e != nil {
 		t.Errorf("Load appn fail:" + e.Error())
 		return
