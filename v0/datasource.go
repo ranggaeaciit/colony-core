@@ -7,10 +7,11 @@ import (
 
 type DataSource struct {
 	orm.ModelBase
-	ID           string `json:"_id",bson:"_id"`
-	ConnectionID string
-	QueryInfo    toolkit.M
-	MetaData     map[string]*FieldInfo
+	ID             string `json:"_id",bson:"_id"`
+	DataSourceName string
+	ConnectionID   string
+	QueryInfo      toolkit.M
+	MetaData       []*FieldInfo
 }
 
 func (ds *DataSource) TableName() string {
@@ -22,7 +23,7 @@ func (ds *DataSource) RecordID() interface{} {
 }
 
 type FieldInfo struct {
-	ID     string
+	ID     string `json:"_id",bson:"_id"`
 	Label  string
 	Type   string
 	Format string
@@ -31,7 +32,7 @@ type FieldInfo struct {
 
 type Lookup struct {
 	orm.ModelBase
-	ID                    string
+	ID                    string `json:"_id",bson:"_id"`
 	DataSourceID          string
 	IDField, DisplayField string
 	LookupFields          []string
