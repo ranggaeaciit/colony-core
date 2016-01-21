@@ -41,7 +41,7 @@ func TestSaveApp(t *testing.T) {
 func TestLoadApp(t *testing.T) {
 	//t.Skip()
 	apps := []colonycore.Application{}
-	c, e := colonycore.Find(new(colonycore.Application), dbox.Lte("_id", "appn2"))
+	c, e := colonycore.Find(new(colonycore.Application), dbox.Lte("_id", "appn4"))
 	if e != nil {
 		t.Errorf("Load appn fail:" + e.Error())
 		return
@@ -51,4 +51,34 @@ func TestLoadApp(t *testing.T) {
 		t.Error("Fetching appn fail:" + e.Error())
 	}
 	toolkit.Printf("Applications: %s\n", toolkit.JsonString(apps))
+}
+
+func TestSaveQuery(t *testing.T) {
+	var e error
+	for i := 1; i <= 5; i++ {
+		ds := new(colonycore.DataSource)
+		ds.ID = toolkit.Sprintf("ds%d", i)
+		ds.ConnectionID = "conn1"
+		ds.QueryInfo = toolkit.M{}
+		ds.MetaData = nil
+		e = colonycore.Save(ds)
+		if e != nil {
+			t.Fatalf("Save datasource fail. " + e.Error())
+		}
+	}
+
+	var dss []colonycore.DataSource
+	c, e := colonycore.Find(new(colonycore.DataSource), nil)
+	if e != nil {
+		t.Fatalf("Load ds fail: " + e.Error())
+	}
+
+	e = c.Fetch(&dss, 0, true)
+	if e != nil {
+		t.Fatalf("Ftech ds fail: " + e.Error())
+	}
+	if len(dss) != 5 {
+		t.Fatal("Fetch ds fail. Got %d records only", len(dss))
+	}
+	toolkit.Println("Data:", toolkit.JsonString(dss))
 }

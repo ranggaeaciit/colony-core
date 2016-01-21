@@ -7,7 +7,7 @@ import (
 
 type DataSource struct {
 	orm.ModelBase
-	ID           string `json:"_id",bson:"_id"`
+	ID           string `json:"_id" bson:"_id"`
 	ConnectionID string
 	QueryInfo    toolkit.M
 	MetaData     map[string]*FieldInfo
