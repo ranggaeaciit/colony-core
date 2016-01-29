@@ -1,6 +1,7 @@
 package colonycore
 
 import (
+	"github.com/eaciit/dbox"
 	"github.com/eaciit/orm/v1"
 	"github.com/eaciit/toolkit"
 )
@@ -16,12 +17,12 @@ type WebGrabber struct {
 	URL               string
 	LogConfiguration  *LogConfiguration
 	DataSettings      []*DataSetting
-	GrabConfiguration *GrabConfiguration
+	GrabConfiguration toolkit.M
 	Parameter         []*Parameter
 }
 
 func (ds *WebGrabber) TableName() string {
-	return "webgrabber"
+	return "webgrabbers"
 }
 
 func (ds *WebGrabber) RecordID() interface{} {
@@ -34,29 +35,40 @@ type LogConfiguration struct {
 	LogPath     string
 }
 
-type DataSetting struct {
-	ColumnSettings     []*ColumnSetting
-	ConnectionInfo     *ConnectionInfo
-	DestinationType    string
-	Name               string
-	RowDeleteCondition toolkit.M
-	RowSelector        string
+type ConnectionInfo struct {
+	dbox.ConnectionInfo
+	Collection string
 }
 
-type ConnectionInfo struct {
-	Collection string
-	Database   string
-	Host       string
+type DataSetting struct {
+	RowSelector     string
+	FilterCondition toolkit.M
+	ColumnSettings  []*ColumnSetting
+
+	RowDeleteCondition  toolkit.M
+	RowIncludeCondition toolkit.M
+
+	ConnectionInfo  *ConnectionInfo
+	DestinationType string
+	Name            string
+}
+
+func (ds *DataSetting) Column(i int, column *ColumnSetting) *ColumnSetting {
+	if i == 0 {
+		ds.ColumnSettings = append(ds.ColumnSettings, column)
+	} else if i <= len(ds.ColumnSettings) {
+		ds.ColumnSettings[i-1] = column
+	} else {
+		return nil
+	}
+	return column
 }
 
 type ColumnSetting struct {
-	Alias    string
-	Index    int
-	Selector string
-}
-
-type GrabConfiguration struct {
-	Data toolkit.M
+	Alias     string
+	Index     int
+	Selector  string
+	ValueType string
 }
 
 type Parameter struct {
