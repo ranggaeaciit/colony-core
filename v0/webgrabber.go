@@ -16,7 +16,7 @@ type WebGrabber struct {
 	TimeoutInterval   int32
 	URL               string
 	LogConfiguration  *LogConfiguration
-	DataSettings      []*DataSetting
+	DataSetting       *DataSetting
 	GrabConfiguration toolkit.M
 	Parameter         []*Parameter
 }
@@ -51,17 +51,6 @@ type DataSetting struct {
 	ConnectionInfo  *ConnectionInfo
 	DestinationType string
 	Name            string
-}
-
-func (ds *DataSetting) Column(i int, column *ColumnSetting) *ColumnSetting {
-	if i == 0 {
-		ds.ColumnSettings = append(ds.ColumnSettings, column)
-	} else if i <= len(ds.ColumnSettings) {
-		ds.ColumnSettings[i-1] = column
-	} else {
-		return nil
-	}
-	return column
 }
 
 type ColumnSetting struct {
