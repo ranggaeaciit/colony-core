@@ -44,7 +44,6 @@ type ConnectionInfo struct {
 
 type DataSetting struct {
 	RowSelector         string           `json:"rowselector",bson:"rowselector"`
-	FilterCondition     toolkit.M        `json:"rowselector",bson:"rowselector"`
 	ColumnSettings      []*ColumnSetting `json:"columnsettings",bson:"columnsettings"`
 	RowDeleteCondition  toolkit.M        `json:"rowdeletecond",bson:"rowdeletecond"`
 	RowIncludeCondition toolkit.M        `json:"rowincludecond",bson:"rowincludecond"`
