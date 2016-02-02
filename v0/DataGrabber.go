@@ -4,21 +4,21 @@ import (
 	"github.com/eaciit/orm/v1"
 )
 
-type Maps struct {
-	fieldOrigin		string
-	fieldDestination	string
-}
-
 type DataGrabber struct {
 	orm.ModelBase
-	ID		string
-	DataSourceOrigin	string
+	ID						string	 `json:"_id",bson:"_id"`
+	DataSourceOrigin		string
 	DataSourceDestination	string
-	Map []*Maps
+	Map 					[]*Maps
+}
+
+type Maps struct {
+	fieldOrigin			string `json:"fieldOrigin"`
+	fieldDestination	string `json:"fieldDestination"`
 }
 
 func (c *DataGrabber) TableName() string {
-	return "DataGrabber"
+	return "datagrabber"
 }
 
 func (c *DataGrabber) RecordID() interface{} {
