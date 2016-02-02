@@ -15,8 +15,8 @@ type DataGrabber struct {
 }
 
 type Maps struct {
-	FieldOrigin      string `json:"fieldOrigin"`
-	FieldDestination string `json:"fieldDestination"`
+	FieldOrigin      string
+	FieldDestination string
 }
 
 func (c *DataGrabber) TableName() string {
