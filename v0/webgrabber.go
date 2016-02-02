@@ -7,7 +7,8 @@ import (
 
 type WebGrabber struct {
 	orm.ModelBase
-	ID                string            `json:"nameid",bson:"nameid"`
+	ID                string            `json:"_id",bson:"_id"`
+	IDBackup          string            `json:"nameid",bson:"nameid"`
 	CallType          string            `json:"calltype",bson:"calltype"`
 	SourceType        string            `json:"sourcetype",bson:"sourcetype"`
 	IntervalType      string            `json:"intervaltype",bson:"intervaltype"`
