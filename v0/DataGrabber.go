@@ -6,19 +6,21 @@ import (
 
 type DataGrabber struct {
 	orm.ModelBase
-	ID						string	 `json:"_id",bson:"_id"`
-	DataSourceOrigin		string
-	DataSourceDestination	string
-	Map 					[]*Maps
+	ID                      string `json:"_id",bson:"_id"`
+	DataSourceOrigin        string
+	DataSourceDestination   string
+	IgnoreFieldsOrigin      []string
+	IgnoreFieldsDestination []string
+	Map                     []*Maps
 }
 
 type Maps struct {
-	fieldOrigin			string `json:"fieldOrigin"`
-	fieldDestination	string `json:"fieldDestination"`
+	FieldOrigin      string `json:"fieldOrigin"`
+	FieldDestination string `json:"fieldDestination"`
 }
 
 func (c *DataGrabber) TableName() string {
-	return "datagrabber"
+	return "datagrabbers"
 }
 
 func (c *DataGrabber) RecordID() interface{} {
