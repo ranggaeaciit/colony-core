@@ -9,8 +9,10 @@ type DataGrabber struct {
 	ID                      string `json:"_id",bson:"_id"`
 	DataSourceOrigin        string
 	DataSourceDestination   string
-	IgnoreFieldsOrigin      []string
 	IgnoreFieldsDestination []string
+	IntervalType            string
+	GrabInterval            int32
+	TimeoutInterval         int32
 	Map                     []*Maps
 }
 

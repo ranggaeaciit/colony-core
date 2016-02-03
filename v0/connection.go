@@ -8,7 +8,7 @@ import (
 type Connection struct {
 	orm.ModelBase
 	ID                               string `json:"_id",bson:"_id"`
-	ConnectionName, Database         string
+	Database                         string
 	Driver, Host, UserName, Password string
 	Settings                         toolkit.M
 }
