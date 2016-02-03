@@ -7,11 +7,10 @@ import (
 
 type DataSource struct {
 	orm.ModelBase
-	ID             string `json:"_id",bson:"_id"`
-	DataSourceName string
-	ConnectionID   string
-	QueryInfo      toolkit.M
-	MetaData       []*FieldInfo
+	ID           string `json:"_id",bson:"_id"`
+	ConnectionID string
+	QueryInfo    toolkit.M
+	MetaData     []*FieldInfo
 }
 
 func (ds *DataSource) TableName() string {
