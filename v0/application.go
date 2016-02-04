@@ -5,9 +5,11 @@ import (
 )
 
 type Application struct {
-	orm.ModelBase `json:"-"`
-	ID            string `json:"_id"`
-	Enable        bool
+	orm.ModelBase
+	ID       string `json:"_id",bson:"_id"`
+	AppsName string `json:"AppsName", bson:"AppsName"`
+	Enable   bool   `json:"Enable", bson:"Enable"`
+	AppPath  string `json:"AppPath", bson:"AppPath"`
 }
 
 func (a *Application) TableName() string {
