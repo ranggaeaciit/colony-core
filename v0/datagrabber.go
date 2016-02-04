@@ -14,6 +14,7 @@ type DataGrabber struct {
 	GrabInterval            int32
 	TimeoutInterval         int32
 	Map                     []*Maps
+	RunAt                   []string
 }
 
 type Maps struct {
