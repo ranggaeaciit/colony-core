@@ -7,9 +7,9 @@ import (
 type Application struct {
 	orm.ModelBase
 	ID       string `json:"_id",bson:"_id"`
-	AppsName string `json:"AppsName", bson:"AppsName"`
-	Enable   bool   `json:"Enable", bson:"Enable"`
-	AppPath  string `json:"AppPath", bson:"AppPath"`
+	AppsName string
+	Enable   bool
+	AppPath  string
 }
 
 func (a *Application) TableName() string {
