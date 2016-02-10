@@ -12,8 +12,8 @@ type WebGrabber struct {
 	CallType          string            `json:"calltype",bson:"calltype"`
 	SourceType        string            `json:"sourcetype",bson:"sourcetype"`
 	IntervalType      string            `json:"intervaltype",bson:"intervaltype"`
-	GrabInterval      int32             `json:"grabinterval",bson:"grabinterval"`
-	TimeoutInterval   int32             `json:"timeoutinterval",bson:"timeoutinterval"`
+	GrabInterval      int               `json:"grabinterval",bson:"grabinterval"`
+	TimeoutInterval   int               `json:"timeoutinterval",bson:"timeoutinterval"`
 	URL               string            `json:"url",bson:"url"`
 	LogConfiguration  *LogConfiguration `json:"logconf",bson:"logconf"`
 	DataSettings      []*DataSetting    `json:"datasettings",bson:"datasettings"`
@@ -35,12 +35,13 @@ type LogConfiguration struct {
 }
 
 type ConnectionInfo struct {
-	Host       string    `json:"host",bson:"host"`
-	Database   string    `json:"database",bson:"database"`
-	UserName   string    `json:"username",bson:"username"`
-	Password   string    `json:"password",bson:"password"`
-	Settings   toolkit.M `json:"settings",bson:"settings"`
-	Collection string    `json:"collection",bson:"collection"`
+	Host         string    `json:"host",bson:"host"`
+	Database     string    `json:"database",bson:"database"`
+	UserName     string    `json:"username",bson:"username"`
+	Password     string    `json:"password",bson:"password"`
+	Settings     toolkit.M `json:"settings",bson:"settings"`
+	Collection   string    `json:"collection",bson:"collection"`
+	ConnectionID string    `json:"connectionid",bson:"connectionid"`
 }
 
 type DataSetting struct {
