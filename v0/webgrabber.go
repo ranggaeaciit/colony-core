@@ -35,12 +35,13 @@ type LogConfiguration struct {
 }
 
 type ConnectionInfo struct {
-	Host       string    `json:"host",bson:"host"`
-	Database   string    `json:"database",bson:"database"`
-	UserName   string    `json:"username",bson:"username"`
-	Password   string    `json:"password",bson:"password"`
-	Settings   toolkit.M `json:"settings",bson:"settings"`
-	Collection string    `json:"collection",bson:"collection"`
+	Host         string    `json:"host",bson:"host"`
+	Database     string    `json:"database",bson:"database"`
+	UserName     string    `json:"username",bson:"username"`
+	Password     string    `json:"password",bson:"password"`
+	Settings     toolkit.M `json:"settings",bson:"settings"`
+	Collection   string    `json:"collection",bson:"collection"`
+	ConnectionId string    `json:"connectionid",bson:"connectionid"`
 }
 
 type DataSetting struct {
