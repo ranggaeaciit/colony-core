@@ -12,12 +12,13 @@ type WebGrabber struct {
 	CallType          string            `json:"calltype",bson:"calltype"`
 	SourceType        string            `json:"sourcetype",bson:"sourcetype"`
 	IntervalType      string            `json:"intervaltype",bson:"intervaltype"`
-	GrabInterval      int32             `json:"grabinterval",bson:"grabinterval"`
-	TimeoutInterval   int32             `json:"timeoutinterval",bson:"timeoutinterval"`
+	GrabInterval      int               `json:"grabinterval",bson:"grabinterval"`
+	TimeoutInterval   int               `json:"timeoutinterval",bson:"timeoutinterval"`
 	URL               string            `json:"url",bson:"url"`
 	LogConfiguration  *LogConfiguration `json:"logconf",bson:"logconf"`
 	DataSettings      []*DataSetting    `json:"datasettings",bson:"datasettings"`
 	GrabConfiguration toolkit.M         `json:"grabconf",bson:"grabconf"`
+	Temp              toolkit.M         `json:"temp",bson:"temp"`
 }
 
 func (ds *WebGrabber) TableName() string {
@@ -42,6 +43,10 @@ type ConnectionInfo struct {
 	Settings     toolkit.M `json:"settings",bson:"settings"`
 	Collection   string    `json:"collection",bson:"collection"`
 	ConnectionId string    `json:"connectionid",bson:"connectionid"`
+
+	FileName  string `json:"filename",bson:"filename"`
+	UseHeader bool   `json:"useheader",bson:"useheader"`
+	Delimiter string `json:"delimiter",bson:"delimiter"`
 }
 
 type DataSetting struct {
