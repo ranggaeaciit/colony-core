@@ -18,6 +18,7 @@ type WebGrabber struct {
 	LogConfiguration  *LogConfiguration `json:"logconf",bson:"logconf"`
 	DataSettings      []*DataSetting    `json:"datasettings",bson:"datasettings"`
 	GrabConfiguration toolkit.M         `json:"grabconf",bson:"grabconf"`
+	Temp              toolkit.M         `json:"temp",bson:"temp"`
 }
 
 func (ds *WebGrabber) TableName() string {
@@ -42,6 +43,10 @@ type ConnectionInfo struct {
 	Settings     toolkit.M `json:"settings",bson:"settings"`
 	Collection   string    `json:"collection",bson:"collection"`
 	ConnectionId string    `json:"connectionid",bson:"connectionid"`
+
+	FileName  string `json:"filename",bson:"filename"`
+	UseHeader bool   `json:"useheader",bson:"useheader"`
+	Delimiter string `json:"delimiter",bson:"delimiter"`
 }
 
 type DataSetting struct {
