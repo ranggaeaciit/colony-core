@@ -26,6 +26,7 @@ type FieldInfo struct {
 	Label  string
 	Type   string
 	Format string
+	Sub    []*FieldInfo
 	Lookup *Lookup
 }
 
