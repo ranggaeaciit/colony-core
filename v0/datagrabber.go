@@ -6,20 +6,24 @@ import (
 
 type DataGrabber struct {
 	orm.ModelBase
-	ID                      string `json:"_id",bson:"_id"`
-	DataSourceOrigin        string
-	DataSourceDestination   string
-	IgnoreFieldsDestination []string
-	IntervalType            string
-	GrabInterval            int32
-	TimeoutInterval         int32
-	Map                     []*Maps
-	RunAt                   []string
+	ID                    string `json:"_id",bson:"_id"`
+	DataSourceOrigin      string
+	DataSourceDestination string
+	UseInterval           bool
+	IntervalType          string
+	GrabInterval          int32
+	TimeoutInterval       int32
+	Maps                  []*Map
+	RunAt                 []string
+	PreTransferCommand    string
+	PostTransferCommand   string
 }
 
-type Maps struct {
-	FieldOrigin      string
-	FieldDestination string
+type Map struct {
+	Destination     string
+	DestinationType string
+	Source          string
+	SourceType      string
 }
 
 func (c *DataGrabber) TableName() string {
