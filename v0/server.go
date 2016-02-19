@@ -11,14 +11,15 @@ type Server struct {
 	Folder       string `json:"folder", bson:"folder"`
 	OS           string `json:"os", bson:"os"`
 	Enable       bool   `json:"enable", bson:"enable"`
+	Host         string `json:"host", bson:"host"`
 	SSHType      string `json:"sshtype", bson:"sshtype"`
 	SSHFile      string `json:"sshfile", bson:"sshfile"`
 	SSHUser      string `json:"sshuser", bson:"sshuser"`
 	SSHPass      string `json:"sshpass", bson:"sshpass"`
-	CmdExtract   string `json:"extract", bson:"extract"`
-	CmdNewFile   string `json:"newfile", bson:"newfile"`
-	CmdCopy      string `json:"copy", bson:"copy"`
-	CmdDirectory string `json:"dir", bson:"dir"`
+	CmdExtract   string `json:"cmdextract", bson:"cmdextract"`
+	CmdNewFile   string `json:"cmdnewfile", bson:"cmdnewfile"`
+	CmdCopy      string `json:"cmdcopy", bson:"cmdcopy"`
+	CmdDirectory string `json:"cmddir", bson:"cmddir"`
 }
 
 func (s *Server) TableName() string {
