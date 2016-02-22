@@ -15,15 +15,6 @@ type Server struct {
 	SSHFile  string `json:"sshfile", bson:"sshfile"`
 	SSHUser  string `json:"sshuser", bson:"sshuser"`
 	SSHPass  string `json:"sshpass", bson:"sshpass"`
-
-	// need to be removed
-	CmdExtract   string `json:"cmdextract", bson:"cmdextract"`
-	CmdNewFile   string `json:"cmdnewfile", bson:"cmdnewfile"`
-	CmdCopy      string `json:"cmdcopy", bson:"cmdcopy"`
-	CmdDirectory string `json:"cmddir", bson:"cmddir"`
-	Enable       bool   `json:"enable", bson:"enable"`
-	Folder       string `json:"folder", bson:"folder"`
-	Type         string `json:"type", bson:"type"`
 }
 
 func (s *Server) TableName() string {
