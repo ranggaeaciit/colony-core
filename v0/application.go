@@ -6,10 +6,12 @@ import (
 
 type Application struct {
 	orm.ModelBase
-	ID       string `json:"_id",bson:"_id"`
-	AppsName string
-	Enable   bool
-	AppPath  string
+	ID         string `json:"_id",bson:"_id"`
+	AppsName   string
+	Type       string
+	ZipName    string
+	Enable     bool
+	DeployedTo []string
 }
 
 func (a *Application) TableName() string {
