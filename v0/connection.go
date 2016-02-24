@@ -11,7 +11,6 @@ type Connection struct {
 	Database                         string
 	Driver, Host, UserName, Password string
 	FileLocation                     string // for JSON/CSV
-	Delimiter, Path                  string // for Hive
 	Settings                         toolkit.M
 }
 
