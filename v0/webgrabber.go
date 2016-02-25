@@ -5,22 +5,6 @@ import (
 	"github.com/eaciit/toolkit"
 )
 
-type WebGrabber struct {
-	orm.ModelBase
-	ID                string            `json:"_id",bson:"_id"`
-	IDBackup          string            `json:"nameid",bson:"nameid"`
-	CallType          string            `json:"calltype",bson:"calltype"`
-	SourceType        string            `json:"sourcetype",bson:"sourcetype"`
-	IntervalType      string            `json:"intervaltype",bson:"intervaltype"`
-	GrabInterval      int               `json:"grabinterval",bson:"grabinterval"`
-	TimeoutInterval   int               `json:"timeoutinterval",bson:"timeoutinterval"`
-	URL               string            `json:"url",bson:"url"`
-	LogConfiguration  *LogConfiguration `json:"logconf",bson:"logconf"`
-	DataSettings      []*DataSetting    `json:"datasettings",bson:"datasettings"`
-	GrabConfiguration toolkit.M         `json:"grabconf",bson:"grabconf"`
-	Temp              toolkit.M         `json:"temp",bson:"temp"`
-}
-
 func (ds *WebGrabber) TableName() string {
 	return "webgrabbers"
 }
@@ -29,40 +13,61 @@ func (ds *WebGrabber) RecordID() interface{} {
 	return ds.ID
 }
 
-type LogConfiguration struct {
+type WebGrabber struct {
+	orm.ModelBase
+	ID           string          `json:"_id",bson:"_id"`
+	SourceType   string          `json:"sourcetype",bson:"sourcetype"`
+	GrabConf     toolkit.M       `json:"grabconf",bson:"grabconf"`
+	IntervalConf *IntervalConf   `json:"intervalconf",bson:"intervalconf"`
+	LogConf      *LogConf        `json:"logconf",bson:"logconf"`
+	HistConf     *HistConf       `json:"histconf",bson:"histconf"`
+	DataSettings []*DataSettings `json:"datasettings",bson:"datasettings"`
+	Running      bool            `json:"running",bson:"running"`
+}
+
+type IntervalConf struct {
+	StartTime       string `json:"starttime",bson:"starttime"`
+	IntervalType    string `json:"intervaltype",bson:"intervaltype"`
+	GrabInterval    int    `json:"grabinterval",bson:"grabinterval"`
+	TimeoutInterval int    `json:"timeoutinterval",bson:"timeoutinterval"`
+	CronConf        string `json:"cronconf",bson:"cronconf"`
+}
+
+type LogConf struct {
+	LogPath     string `json:"logpath",bson:"logpath"`
 	FileName    string `json:"filename",bson:"filename"`
 	FilePattern string `json:"filepattern",bson:"filepattern"`
-	LogPath     string `json:"logpath",bson:"logpath"`
+}
+
+type HistConf struct {
+	Histpath    string `json:"histpath",bson:"histpath"`
+	RecPath     string `json:"recpath",bson:"recpath"`
+	FileName    string `json:"filename",bson:"filename"`
+	FilePattern string `json:"filepattern",bson:"filepattern"`
+}
+
+type DataSettings struct {
+	_id            string            `json:"_id",bson:"_id"`
+	RowSelector    string            `json:"rowselector",bson:"rowselector"`
+	ColumnSettings []*ColumnSettings `json:"columnsettings",bson:"columnsettings"`
+	FilterCond     toolkit.M         `json:"filtercond",bson:"filtercond"`
+	DestType       string            `json:"desttype",bson:"desttype"`
+	ConnectionInfo *ConnectionInfo   `json:"connectioninfo",bson:"connectioninfo"`
+}
+
+type ColumnSettings struct {
+	Index     int    `json:"index",bson:"index"`
+	Alias     string `json:"alias",bson:"alias"`
+	Selector  string `json:"selector",bson:"selector"`
+	ValueType string `json:"valuetipe",bson:"valuetype"`
+	AttrName  string `json:"attrname",bson:"attrname"`
 }
 
 type ConnectionInfo struct {
-	Host         string    `json:"host",bson:"host"`
-	Database     string    `json:"database",bson:"database"`
-	UserName     string    `json:"username",bson:"username"`
-	Password     string    `json:"password",bson:"password"`
-	Settings     toolkit.M `json:"settings",bson:"settings"`
-	Collection   string    `json:"collection",bson:"collection"`
-	ConnectionId string    `json:"connectionid",bson:"connectionid"`
-
-	FileName  string `json:"filename",bson:"filename"`
-	UseHeader bool   `json:"useheader",bson:"useheader"`
-	Delimiter string `json:"delimiter",bson:"delimiter"`
-}
-
-type DataSetting struct {
-	FilterCond          toolkit.M        `json:"filtercond",bson:"filtercond"`
-	RowSelector         string           `json:"rowselector",bson:"rowselector"`
-	ColumnSettings      []*ColumnSetting `json:"columnsettings",bson:"columnsettings"`
-	RowDeleteCondition  toolkit.M        `json:"rowdeletecond",bson:"rowdeletecond"`
-	RowIncludeCondition toolkit.M        `json:"rowincludecond",bson:"rowincludecond"`
-	ConnectionInfo      *ConnectionInfo  `json:"connectioninfo",bson:"connectioninfo"`
-	DestinationType     string           `json:"desttype",bson:"desttype"`
-	Name                string           `json:"name",bson:"name"`
-}
-
-type ColumnSetting struct {
-	Alias     string `json:"alias",bson:"alias"`
-	Index     int    `json:"index",bson:"index"`
-	Selector  string `json:"selector",bson:"selector"`
-	ValueType string `json:"valuetype",bson:"valuetype"`
+	Host       string    `json:"host",bson:"host"`
+	UserName   string    `json:"username",bson:"username"`
+	Password   string    `json:"password",bson:"password"`
+	Database   string    `json:"database",bson:"database"`
+	Collection string    `json:"collection",bson:"collection"`
+	Settings   toolkit.M `json:"settings",bson:"settings"`
 }
