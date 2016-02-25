@@ -5,18 +5,6 @@ import (
 	"github.com/eaciit/toolkit"
 )
 
-type WebGrabber struct {
-	orm.ModelBase
-	ID           string          `json:"_id",bson:"_id"`
-	SourceType   string          `json:"sourcetype",bson:"sourcetype"`
-	GrabConf     *GrabConf       `json:"grabconf",bson:"grabconf"`
-	IntervalConf *IntervalConf   `json:"intervalconf",bson:"intervalconf"`
-	LogConf      *LogConf        `json:"logconf",bson:"logconf"`
-	HistConf     *HistConf       `json:"histconf",bson:"histconf"`
-	DataSettings []*DataSettings `json:"datasettings",bson:"datasettings"`
-	Running      bool            `json:"running",bson:"running"`
-}
-
 func (ds *WebGrabber) TableName() string {
 	return "webgrabbers"
 }
@@ -25,10 +13,16 @@ func (ds *WebGrabber) RecordID() interface{} {
 	return ds.ID
 }
 
-type GrabConf struct {
-	Url        string    `json:"url",bson:"url"`
-	CallType   string    `json:"calltype",bson:"calltype"`
-	FormValues toolkit.M `json:"formvalues",bson:"formvalues"`
+type WebGrabber struct {
+	orm.ModelBase
+	ID           string          `json:"_id",bson:"_id"`
+	SourceType   string          `json:"sourcetype",bson:"sourcetype"`
+	GrabConf     toolkit.M       `json:"grabconf",bson:"grabconf"`
+	IntervalConf *IntervalConf   `json:"intervalconf",bson:"intervalconf"`
+	LogConf      *LogConf        `json:"logconf",bson:"logconf"`
+	HistConf     *HistConf       `json:"histconf",bson:"histconf"`
+	DataSettings []*DataSettings `json:"datasettings",bson:"datasettings"`
+	Running      bool            `json:"running",bson:"running"`
 }
 
 type IntervalConf struct {
@@ -53,7 +47,7 @@ type HistConf struct {
 }
 
 type DataSettings struct {
-	Name           string            `json:"name",bson:"name"`
+	_id            string            `json:"_id",bson:"_id"`
 	RowSelector    string            `json:"rowselector",bson:"rowselector"`
 	ColumnSettings []*ColumnSettings `json:"columnsettings",bson:"columnsettings"`
 	FilterCond     toolkit.M         `json:"filtercond",bson:"filtercond"`
@@ -62,13 +56,17 @@ type DataSettings struct {
 }
 
 type ColumnSettings struct {
-	Index    int    `json:"index",bson:"index"`
-	Alias    string `json:"alias",bson:"alias"`
-	Selector string `json:"selector",bson:"selector"`
+	Index     int    `json:"index",bson:"index"`
+	Alias     string `json:"alias",bson:"alias"`
+	Selector  string `json:"selector",bson:"selector"`
+	ValueType string `json:"valuetipe",bson:"valuetype"`
+	AttrName  string `json:"attrname",bson:"attrname"`
 }
 
 type ConnectionInfo struct {
 	Host       string    `json:"host",bson:"host"`
+	UserName   string    `json:"username",bson:"username"`
+	Password   string    `json:"password",bson:"password"`
 	Database   string    `json:"database",bson:"database"`
 	Collection string    `json:"collection",bson:"collection"`
 	Settings   toolkit.M `json:"settings",bson:"settings"`
