@@ -10,6 +10,7 @@ type Connection struct {
 	ID                               string `json:"_id",bson:"_id"`
 	Database                         string
 	Driver, Host, UserName, Password string
+	FileLocation                     string // for JSON/CSV
 	Settings                         toolkit.M
 }
 
