@@ -6,17 +6,24 @@ import (
 
 type DataGrabber struct {
 	orm.ModelBase
-	ID                    string `json:"_id",bson:"_id"`
+	ID string `json:"_id",bson:"_id"`
+
 	DataSourceOrigin      string
 	DataSourceDestination string
-	UseInterval           bool
-	IntervalType          string
-	GrabInterval          int32
-	TimeoutInterval       int32
-	Maps                  []*Map
-	RunAt                 []string
-	PreTransferCommand    string
-	PostTransferCommand   string
+
+	ConnectionOrigin      string
+	ConnectionDestination string
+	TableOrigin           string
+	TableDestination      string
+
+	UseInterval         bool
+	IntervalType        string
+	GrabInterval        int32
+	TimeoutInterval     int32
+	Maps                []*Map
+	RunAt               []string
+	PreTransferCommand  string
+	PostTransferCommand string
 }
 
 type Map struct {
