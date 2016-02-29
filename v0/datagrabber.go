@@ -42,12 +42,13 @@ func (c *DataGrabber) RecordID() interface{} {
 	return c.ID
 }
 
-type WizardTransformation struct {
+type DataGrabberWizardPayloadTransformation struct {
 	TableSource      string
 	TableDestination string
 }
-type Wizard struct {
+
+type DataGrabberWizardPayload struct {
 	ConnectionSource      string
 	ConnectionDestination string
-	Transformations       []*WizardTransformation
+	Transformations       []*DataGrabberWizardPayloadTransformation
 }
