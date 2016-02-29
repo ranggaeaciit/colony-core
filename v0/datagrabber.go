@@ -11,6 +11,7 @@ type DataGrabber struct {
 	DataSourceOrigin      string
 	DataSourceDestination string
 
+	IsFromWizard          bool
 	ConnectionOrigin      string
 	ConnectionDestination string
 	TableOrigin           string
