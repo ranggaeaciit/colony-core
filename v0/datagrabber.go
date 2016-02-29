@@ -41,3 +41,13 @@ func (c *DataGrabber) TableName() string {
 func (c *DataGrabber) RecordID() interface{} {
 	return c.ID
 }
+
+type WizardTransformation struct {
+	TableSource      string
+	TableDestination string
+}
+type Wizard struct {
+	ConnectionSource      string
+	ConnectionDestination string
+	Transformations       []*WizardTransformation
+}
