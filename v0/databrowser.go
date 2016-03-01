@@ -6,16 +6,14 @@ import (
 
 type DataBrowser struct {
 	orm.ModelBase
-	ID          string `json:"_id",bson:"_id"`
-	BrowserName string
-	IDDetails 	string
-	Description string
-	Connection 	string
-	DataBase 	string
-	TableNames 	string
-	QueryType 	string
-	QueryText 	string
-	Struct     	[]*StructInfo
+	ID           string `json:"_id",bson:"_id"`
+	BrowserName  string
+	Description  string
+	ConnectionID string
+	TableNames 	 string
+	QueryType 	 string
+	QueryText 	 string
+	MetaData   	 []*StructInfo
 
 }
 
@@ -32,7 +30,7 @@ type StructInfo struct {
 }
 
 func (b *DataBrowser) TableName() string {
-	return "DataBrowser"
+	return "databrowser"
 }
 
 func (b *DataBrowser) RecordID() interface{} {
