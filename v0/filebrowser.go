@@ -27,6 +27,7 @@ type FileInfo struct {
 	LastModified time.Time   `json:"lastmodified", bson:"lastmodified"`
 	Type         string      `json:"type", bson:"type"`
 	Sub          []*FileInfo `json:"sub", bson:"sub"`
+	SubCount     int64       `json:"subcount", bson:"subcount"`
 }
 
 func Construct(lines string) ([]FileInfo, error) {
