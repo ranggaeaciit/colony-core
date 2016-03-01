@@ -16,6 +16,10 @@ type Server struct {
 	SSHFile    string `json:"sshfile", bson:"sshfile"`
 	SSHUser    string `json:"sshuser", bson:"sshuser"`
 	SSHPass    string `json:"sshpass", bson:"sshpass"`
+	CmdExtract string `json:"cmdextract", bson:"cmdextract"`
+	CmdNewFile string `json:"cmdnewfile", bson:"cmdnewfile"`
+	CmdCopy    string `json:"cmdcopy", bson:"cmdcopy"`
+	CmdMkDir   string `json:"cmdmkdir", bson:"cmdmkdir"`
 }
 
 func (s *Server) TableName() string {

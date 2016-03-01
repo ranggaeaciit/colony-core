@@ -8,6 +8,7 @@ type Application struct {
 	orm.ModelBase
 	ID         string `json:"_id",bson:"_id"`
 	AppsName   string
+	Port       string
 	Type       string
 	ZipName    string
 	Enable     bool

@@ -18,16 +18,15 @@ import (
 )*/
 
 type FileInfo struct {
-	// orm.ModelBase
-	Name         string     `json:"name", bson:"name"`
-	Size         float64    `json:"size", bson:"size"`
-	User         string     `json:"user", bson:"user"`
-	Group        string     `json:"group", bson:"group"`
-	Permissions  string     `json:"permissions", bson:"permissions"`
-	LastModified time.Time  `json:"lastmodified", bson:"lastmodified"`
-	Type         string     `json:"type", bson:"type"`
-	Sub          []FileInfo `json:"sub", bson:"sub"`
-	SubCount     int64      `json:"subcount", bson:"subcount"`
+	Name         string      `json:"name", bson:"name"`
+	Size         float64     `json:"size", bson:"size"`
+	User         string      `json:"user", bson:"user"`
+	Group        string      `json:"group", bson:"group"`
+	Permissions  string      `json:"permissions", bson:"permissions"`
+	CreatedDate  time.Time   `json:"createddate", bson:"createddate"`
+	LastModified time.Time   `json:"lastmodified", bson:"lastmodified"`
+	Type         string      `json:"type", bson:"type"`
+	Sub          []*FileInfo `json:"sub", bson:"sub"`
 }
 
 func Construct(lines string) ([]FileInfo, error) {
