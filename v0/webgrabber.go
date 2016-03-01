@@ -26,11 +26,12 @@ type WebGrabber struct {
 }
 
 type IntervalConf struct {
-	StartTime       string `json:"starttime",bson:"starttime"`
-	IntervalType    string `json:"intervaltype",bson:"intervaltype"`
-	GrabInterval    int    `json:"grabinterval",bson:"grabinterval"`
-	TimeoutInterval int    `json:"timeoutinterval",bson:"timeoutinterval"`
-	CronConf        string `json:"cronconf",bson:"cronconf"`
+	StartTime       string    `json:"starttime",bson:"starttime"`
+	ExpiredTime     string    `json:"expiredtime",bson:"expiredtime"`
+	IntervalType    string    `json:"intervaltype",bson:"intervaltype"`
+	GrabInterval    int       `json:"grabinterval",bson:"grabinterval"`
+	TimeoutInterval int       `json:"timeoutinterval",bson:"timeoutinterval"`
+	CronConf        toolkit.M `json:"cronconf",bson:"cronconf"`
 }
 
 type LogConf struct {
@@ -51,6 +52,7 @@ type DataSettings struct {
 	RowSelector    string            `json:"rowselector",bson:"rowselector"`
 	ColumnSettings []*ColumnSettings `json:"columnsettings",bson:"columnsettings"`
 	FilterCond     toolkit.M         `json:"filtercond",bson:"filtercond"`
+	DestOutputType string            `json:"destoutputtype",bson:"destoutputtype"`
 	DestType       string            `json:"desttype",bson:"desttype"`
 	ConnectionInfo *ConnectionInfo   `json:"connectioninfo",bson:"connectioninfo"`
 }
