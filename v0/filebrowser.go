@@ -30,7 +30,7 @@ type FileInfo struct {
 	SubCount     int64       `json:"subcount", bson:"subcount"`
 }
 
-func Construct(lines string) ([]FileInfo, error) {
+func ConstructFileInfo(lines string) ([]FileInfo, error) {
 	var result []FileInfo
 
 	aLine := strings.Split(lines, "\n")
