@@ -4,6 +4,7 @@ import (
 	"github.com/eaciit/errorlib"
 	// "github.com/eaciit/orm/v1"
 	"github.com/eaciit/toolkit"
+	// "log"
 	"strconv"
 	"strings"
 	"time"
@@ -97,11 +98,11 @@ func parse(line string, path string) (result FileInfo, e error) {
 
 			result.Name = strings.TrimSpace(cols[8])
 
-			if strings.LastIndex(path, DELIMITER) == -1 {
-				result.Path = path + DELIMITER + result.Name
-			} else {
-				result.Path = path + result.Name
+			if path[len(path)-1:] != DELIMITER {
+				path = path + DELIMITER
 			}
+
+			result.Path = path + result.Name
 
 		} else {
 			e = errorlib.Error("", "", "parse", "column is not valid")
