@@ -36,29 +36,32 @@ type FileInfo struct {
 }
 
 func ConstructFileInfo(lines string, path string) ([]FileInfo, error) {
-	var result []FileInfo
+	if lines != "" {
+		var result []FileInfo
 
-	aLine := strings.Split(lines, "\n")
+		aLine := strings.Split(lines, "\n")
 
-	if len(aLine) > 1 {
-		for _, val := range aLine {
-			if val != "" {
-				res, e := parse(val, path)
-				if e != nil {
-					return result, e
-				} else {
-					result = append(result, res)
+		if len(aLine) > 1 {
+			for _, val := range aLine {
+				if val != "" {
+					res, e := parse(val, path)
+					if e != nil {
+						return result, e
+					} else {
+						result = append(result, res)
+					}
 				}
 			}
-		}
 
+			return result, nil
+		} else if len(aLine) > 0 {
+			res, e := parse(aLine[0], path)
+			result = append(result, res)
+			return result, e
+		}
 		return result, nil
-	} else if len(aLine) > 0 {
-		res, e := parse(aLine[0], path)
-		result = append(result, res)
-		return result, e
 	}
-	return result, nil
+	return nil, nil
 }
 
 func parse(line string, path string) (result FileInfo, e error) {
