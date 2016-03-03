@@ -1,7 +1,7 @@
 package colonycore
 
 import (
-	"github.com/eaciit/orm/v1"
+	"github.com/eaciit/orm/v1" 
 )
 
 type Application struct {
@@ -13,6 +13,9 @@ type Application struct {
 	ZipName    string
 	Enable     bool
 	DeployedTo []string
+	Command    interface{}
+	Variable   interface{}
+
 }
 
 func (a *Application) TableName() string {
