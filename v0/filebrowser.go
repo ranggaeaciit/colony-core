@@ -32,6 +32,7 @@ type FileInfo struct {
 	SubCount     int64       `json:"subcount", bson:"subcount"`
 	IsDir        bool        `json:"isdir", bson:"isdir"`
 	Path         string      `json:"path", bson:"path"`
+	IsEditable   bool        `json:"iseditable", bson:"iseditable"`
 }
 
 func ConstructFileInfo(lines string, path string) ([]FileInfo, error) {
@@ -39,8 +40,8 @@ func ConstructFileInfo(lines string, path string) ([]FileInfo, error) {
 
 	aLine := strings.Split(lines, "\n")
 
-	if len(aLine) > 2 {
-		for _, val := range aLine[1:] {
+	if len(aLine) > 1 {
+		for _, val := range aLine {
 			if val != "" {
 				res, e := parse(val, path)
 				if e != nil {
@@ -52,12 +53,12 @@ func ConstructFileInfo(lines string, path string) ([]FileInfo, error) {
 		}
 
 		return result, nil
-	} else {
-		res, e := parse(aLine[1], path)
+	} else if len(aLine) > 0 {
+		res, e := parse(aLine[0], path)
 		result = append(result, res)
 		return result, e
 	}
-
+	return result, nil
 }
 
 func parse(line string, path string) (result FileInfo, e error) {
@@ -98,12 +99,15 @@ func parse(line string, path string) (result FileInfo, e error) {
 
 			result.Name = strings.TrimSpace(cols[8])
 
-			if path[len(path)-1:] != DELIMITER {
-				path = path + DELIMITER
+			if len(path) > 1 {
+				if path[len(path)-1:] != DELIMITER {
+					path = path + DELIMITER
+				}
+
+				result.Path = path + result.Name
 			}
 
-			result.Path = path + result.Name
-
+			result.IsEditable = true
 		} else {
 			e = errorlib.Error("", "", "parse", "column is not valid")
 		}
