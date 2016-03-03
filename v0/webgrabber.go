@@ -48,7 +48,7 @@ type HistConf struct {
 }
 
 type DataSettings struct {
-	id             string            `json:"id",bson:"id"`
+	ID             string            `json:"_id",bson:"_id"`
 	RowSelector    string            `json:"rowselector",bson:"rowselector"`
 	ColumnSettings []*ColumnSettings `json:"columnsettings",bson:"columnsettings"`
 	FilterCond     toolkit.M         `json:"filtercond",bson:"filtercond"`
