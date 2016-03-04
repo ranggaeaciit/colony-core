@@ -10,21 +10,15 @@ type DataGrabber struct {
 
 	DataSourceOrigin      string
 	DataSourceDestination string
-
 	IsFromWizard          bool
-	ConnectionOrigin      string
-	ConnectionDestination string
-	TableOrigin           string
-	TableDestination      string
-
-	UseInterval         bool
-	IntervalType        string
-	GrabInterval        int32
-	TimeoutInterval     int32
-	Maps                []*Map
-	RunAt               []string
-	PreTransferCommand  string
-	PostTransferCommand string
+	UseInterval           bool
+	IntervalType          string
+	GrabInterval          int32
+	TimeoutInterval       int32
+	Maps                  []*Map
+	RunAt                 []string
+	PreTransferCommand    string
+	PostTransferCommand   string
 }
 
 type Map struct {
