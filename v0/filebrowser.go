@@ -64,6 +64,19 @@ func ConstructFileInfo(lines string, path string) ([]FileInfo, error) {
 	return nil, nil
 }
 
+func ConstructSearchResult(list []FileInfo, path string) []FileInfo {
+	var tmpFI []FileInfo
+
+	for _, fi := range list {
+		// fi.Name = strings.Replace(fi.Name, path, "", 1)
+		// fi.Path = strings.Replace(fi.Path, path, "", 1)
+		fi.Path = fi.Name
+		tmpFI = append(tmpFI, fi)
+	}
+
+	return tmpFI
+}
+
 func parse(line string, path string) (result FileInfo, e error) {
 	if line != "" {
 		cols := strings.Split(strings.Trim(line, " "), "||")
