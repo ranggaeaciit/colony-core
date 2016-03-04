@@ -12,6 +12,7 @@ type DataGrabber struct {
 	DataSourceDestination string
 	IsFromWizard          bool
 	UseInterval           bool
+	InsertMode            string
 	IntervalType          string
 	GrabInterval          int32
 	TimeoutInterval       int32
