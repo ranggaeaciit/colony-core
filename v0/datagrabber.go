@@ -50,5 +50,6 @@ type DataGrabberWizardPayloadTransformation struct {
 type DataGrabberWizardPayload struct {
 	ConnectionSource      string
 	ConnectionDestination string
+	Prefix                string
 	Transformations       []*DataGrabberWizardPayloadTransformation
 }
