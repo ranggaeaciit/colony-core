@@ -19,9 +19,11 @@ type DataBrowser struct {
 type StructInfo struct {
 	Field         string
 	Label         string
+	DataType      string
 	Format        string
 	Align         string
 	ShowIndex     int
+	HiddenField   bool
 	Sortable      bool
 	SimpleFilter  bool
 	AdvanceFilter bool
