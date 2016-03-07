@@ -10,21 +10,16 @@ type DataGrabber struct {
 
 	DataSourceOrigin      string
 	DataSourceDestination string
-
 	IsFromWizard          bool
-	ConnectionOrigin      string
-	ConnectionDestination string
-	TableOrigin           string
-	TableDestination      string
-
-	UseInterval         bool
-	IntervalType        string
-	GrabInterval        int32
-	TimeoutInterval     int32
-	Maps                []*Map
-	RunAt               []string
-	PreTransferCommand  string
-	PostTransferCommand string
+	UseInterval           bool
+	InsertMode            string
+	IntervalType          string
+	GrabInterval          int32
+	TimeoutInterval       int32
+	Maps                  []*Map
+	RunAt                 []string
+	PreTransferCommand    string
+	PostTransferCommand   string
 }
 
 type Map struct {
@@ -50,5 +45,6 @@ type DataGrabberWizardPayloadTransformation struct {
 type DataGrabberWizardPayload struct {
 	ConnectionSource      string
 	ConnectionDestination string
+	Prefix                string
 	Transformations       []*DataGrabberWizardPayloadTransformation
 }

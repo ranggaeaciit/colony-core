@@ -48,7 +48,7 @@ type HistConf struct {
 }
 
 type DataSettings struct {
-	ID             string            `json:"_id",bson:"_id"`
+	Nameid         string            `json:"nameid",bson:"nameid"`
 	RowSelector    string            `json:"rowselector",bson:"rowselector"`
 	ColumnSettings []*ColumnSettings `json:"columnsettings",bson:"columnsettings"`
 	FilterCond     toolkit.M         `json:"filtercond",bson:"filtercond"`
@@ -66,10 +66,11 @@ type ColumnSettings struct {
 }
 
 type ConnectionInfo struct {
-	Host       string    `json:"host",bson:"host"`
-	UserName   string    `json:"username",bson:"username"`
-	Password   string    `json:"password",bson:"password"`
-	Database   string    `json:"database",bson:"database"`
-	Collection string    `json:"collection",bson:"collection"`
-	Settings   toolkit.M `json:"settings",bson:"settings"`
+	ConnectionID string    `json:"connectionid",bson:"connectionid"`
+	Host         string    `json:"host",bson:"host"`
+	UserName     string    `json:"username",bson:"username"`
+	Password     string    `json:"password",bson:"password"`
+	Database     string    `json:"database",bson:"database"`
+	Collection   string    `json:"collection",bson:"collection"`
+	Settings     toolkit.M `json:"settings",bson:"settings"`
 }
