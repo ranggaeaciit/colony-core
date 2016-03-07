@@ -66,10 +66,11 @@ type ColumnSettings struct {
 }
 
 type ConnectionInfo struct {
-	Host       string    `json:"host",bson:"host"`
-	UserName   string    `json:"username",bson:"username"`
-	Password   string    `json:"password",bson:"password"`
-	Database   string    `json:"database",bson:"database"`
-	Collection string    `json:"collection",bson:"collection"`
-	Settings   toolkit.M `json:"settings",bson:"settings"`
+	ConnectionID string    `json:"connectionid",bson:"connectionid"`
+	Host         string    `json:"host",bson:"host"`
+	UserName     string    `json:"username",bson:"username"`
+	Password     string    `json:"password",bson:"password"`
+	Database     string    `json:"database",bson:"database"`
+	Collection   string    `json:"collection",bson:"collection"`
+	Settings     toolkit.M `json:"settings",bson:"settings"`
 }
