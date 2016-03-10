@@ -10,23 +10,24 @@ type DataBrowser struct {
 	BrowserName  string
 	Description  string
 	ConnectionID string
-	TableNames 	 string
-	QueryType 	 string
-	QueryText 	 string
-	MetaData   	 []*StructInfo
-
+	TableNames   string
+	QueryType    string
+	QueryText    string
+	MetaData     []*StructInfo
 }
 
 type StructInfo struct {
-	Field     		string 
-	Label  			string
-	Format   		string
-	Align 			string
-	ShowIndex 		int32
-	Sortable 		bool
-	SimpleFilter 	bool
-	AdvanceFilter	bool
-	Aggregate 		string
+	Field         string
+	Label         string
+	DataType      string
+	Format        string
+	Align         string
+	ShowIndex     int
+	HiddenField   bool
+	Sortable      bool
+	SimpleFilter  bool
+	AdvanceFilter bool
+	Aggregate     string
 }
 
 func (b *DataBrowser) TableName() string {

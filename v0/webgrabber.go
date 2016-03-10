@@ -26,11 +26,12 @@ type WebGrabber struct {
 }
 
 type IntervalConf struct {
-	StartTime       string `json:"starttime",bson:"starttime"`
-	IntervalType    string `json:"intervaltype",bson:"intervaltype"`
-	GrabInterval    int    `json:"grabinterval",bson:"grabinterval"`
-	TimeoutInterval int    `json:"timeoutinterval",bson:"timeoutinterval"`
-	CronConf        string `json:"cronconf",bson:"cronconf"`
+	StartTime       string    `json:"starttime",bson:"starttime"`
+	ExpiredTime     string    `json:"expiredtime",bson:"expiredtime"`
+	IntervalType    string    `json:"intervaltype",bson:"intervaltype"`
+	GrabInterval    int       `json:"grabinterval",bson:"grabinterval"`
+	TimeoutInterval int       `json:"timeoutinterval",bson:"timeoutinterval"`
+	CronConf        toolkit.M `json:"cronconf",bson:"cronconf"`
 }
 
 type LogConf struct {
@@ -47,10 +48,11 @@ type HistConf struct {
 }
 
 type DataSettings struct {
-	id             string            `json:"id",bson:"id"`
+	Nameid         string            `json:"nameid",bson:"nameid"`
 	RowSelector    string            `json:"rowselector",bson:"rowselector"`
 	ColumnSettings []*ColumnSettings `json:"columnsettings",bson:"columnsettings"`
 	FilterCond     toolkit.M         `json:"filtercond",bson:"filtercond"`
+	DestOutputType string            `json:"destoutputtype",bson:"destoutputtype"`
 	DestType       string            `json:"desttype",bson:"desttype"`
 	ConnectionInfo *ConnectionInfo   `json:"connectioninfo",bson:"connectioninfo"`
 }
@@ -64,10 +66,11 @@ type ColumnSettings struct {
 }
 
 type ConnectionInfo struct {
-	Host       string    `json:"host",bson:"host"`
-	UserName   string    `json:"username",bson:"username"`
-	Password   string    `json:"password",bson:"password"`
-	Database   string    `json:"database",bson:"database"`
-	Collection string    `json:"collection",bson:"collection"`
-	Settings   toolkit.M `json:"settings",bson:"settings"`
+	ConnectionID string    `json:"connectionid",bson:"connectionid"`
+	Host         string    `json:"host",bson:"host"`
+	UserName     string    `json:"username",bson:"username"`
+	Password     string    `json:"password",bson:"password"`
+	Database     string    `json:"database",bson:"database"`
+	Collection   string    `json:"collection",bson:"collection"`
+	Settings     toolkit.M `json:"settings",bson:"settings"`
 }
