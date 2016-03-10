@@ -2,6 +2,7 @@ package colonycore
 
 import (
 	"github.com/eaciit/orm/v1"
+    "github.com/eaciit/toolkit"
 )
 
 type Server struct {
@@ -20,6 +21,7 @@ type Server struct {
 	CmdNewFile string `json:"cmdnewfile", bson:"cmdnewfile"`
 	CmdCopy    string `json:"cmdcopy", bson:"cmdcopy"`
 	CmdMkDir   string `json:"cmdmkdir", bson:"cmdmkdir"`
+    HostAlias  toolkit.M `json:"hostAlias", bson:"hostAlias"`
 }
 
 func (s *Server) TableName() string {
