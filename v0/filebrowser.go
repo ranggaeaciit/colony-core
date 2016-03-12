@@ -5,6 +5,7 @@ import (
 	// "github.com/eaciit/orm/v1"
 	"github.com/eaciit/toolkit"
 	// "log"
+	"mime/multipart"
 	"strconv"
 	"strings"
 	"time"
@@ -18,6 +19,18 @@ const (
 	}*/
 	DELIMITER = "/"
 )
+
+type FileBrowserPayload struct {
+	ServerId   string         `json:"serverId"`
+	Path       string         `json:"path"`
+	Search     string         `json:"search"`
+	Contents   string         `json:"contents"`
+	Permission string         `json:"permission"`
+	FileName   string         `json:"filename"`
+	FileSizes  int64          `json:"filesizes"`
+	NewName    string         `json:"newname"`
+	File       multipart.File `json:"file"`
+}
 
 type FileInfo struct {
 	Name         string      `json:"name", bson:"name"`

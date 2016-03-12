@@ -24,6 +24,7 @@ type StructInfo struct {
 	Align         string
 	ShowIndex     int
 	HiddenField   bool
+	Lookup        bool
 	Sortable      bool
 	SimpleFilter  bool
 	AdvanceFilter bool
