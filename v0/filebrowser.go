@@ -21,15 +21,15 @@ const (
 )
 
 type FileBrowserPayload struct {
-	ServerId   string         `json:"serverId"`
-	Path       string         `json:"path"`
-	Search     string         `json:"search"`
-	Contents   string         `json:"contents"`
-	Permission string         `json:"permission"`
-	FileName   string         `json:"filename"`
-	FileSizes  int64          `json:"filesizes"`
-	NewName    string         `json:"newname"`
-	File       multipart.File `json:"file"`
+	ServerId   string           `json:"serverId"`
+	Path       string           `json:"path"`
+	Search     string           `json:"search"`
+	Contents   string           `json:"contents"`
+	Permission string           `json:"permission"`
+	NewName    string           `json:"newname"`
+	FileName   []string         `json:"filename"`
+	FileSizes  []int64          `json:"filesizes"`
+	File       []multipart.File `json:"file"`
 }
 
 type FileInfo struct {
