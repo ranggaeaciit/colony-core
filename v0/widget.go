@@ -2,25 +2,26 @@ package colonycore
 
 import (
 	"github.com/eaciit/orm/v1"
+	"path/filepath"
 )
 
 type Grid struct {
 	orm.ModelBase
-	ID           string            `json:"_id"`
-	Title        string            `json:"title"`
-	DataSourceID string            `json:"dataSourceID"`
-	Aggregate    []AggregateColumn `json:"aggregate"`
-	Outsider     Outsider          `json:"outsider"`
-	PageSize     int               `json:"pageSize"`
-	Groupable    bool              `json:"groupable"`
-	Sortable     bool              `json:"sortable"`
-	Filterable   bool              `json:"filterable"`
-	Pageable     Pageable          `json:"pageable"`
-	Columns      []Column          `json:"columns"`
-	ColumnMenu   bool              `json:"columnMenu"`
-	Toolbar      []string          `json:"toolbar"`
-	Pdf          ExportGrid        `json:"pdf"`
-	Excel        ExportGrid        `json:"excel"`
+	ID           string             `json:"_id"`
+	Title        string             `json:"title"`
+	DataSourceID string             `json:"dataSourceID"`
+	Aggregate    []*AggregateColumn `json:"aggregate"`
+	Outsider     *Outsider          `json:"outsider"`
+	PageSize     int                `json:"pageSize"`
+	Groupable    bool               `json:"groupable"`
+	Sortable     bool               `json:"sortable"`
+	Filterable   bool               `json:"filterable"`
+	Pageable     *Pageable          `json:"pageable"`
+	Columns      []*Column          `json:"columns"`
+	ColumnMenu   bool               `json:"columnMenu"`
+	Toolbar      []string           `json:"toolbar"`
+	Pdf          ExportGrid         `json:"pdf"`
+	Excel        ExportGrid         `json:"excel"`
 }
 
 type Outsider struct {
@@ -32,10 +33,11 @@ type Outsider struct {
 }
 
 type Selector struct {
-	ID               string      `json:"_id"`
-	MasterDataSource string      `json:"masterDataSource"`
-	Title            string      `json:"title"`
-	Fields           FieldDetail `json:"fields"`
+	orm.ModelBase
+	ID               string         `json:"_id"`
+	MasterDataSource string         `json:"masterDataSource"`
+	Title            string         `json:"title"`
+	Fields           []*FieldDetail `json:"fields"`
 }
 
 type FieldDetail struct {
@@ -65,15 +67,15 @@ type Pageable struct {
 }
 
 type Column struct {
-	Template         string           `json:"template"`
-	Field            string           `json:"field"`
-	Title            string           `json:"title"`
-	Format           string           `json:"format"`
-	Width            string           `json:"width"`
-	Menu             bool             `json:"menu"`
-	HeaderTemplate   string           `json:"headerTemplate"`
-	HeaderAttributes HeaderAttributes `json:"headerAttributes"`
-	FooterTemplate   string           `json:"footerTemplate"`
+	Template         string            `json:"template"`
+	Field            string            `json:"field"`
+	Title            string            `json:"title"`
+	Format           string            `json:"format"`
+	Width            string            `json:"width"`
+	Menu             bool              `json:"menu"`
+	HeaderTemplate   string            `json:"headerTemplate"`
+	HeaderAttributes *HeaderAttributes `json:"headerAttributes"`
+	FooterTemplate   string            `json:"footerTemplate"`
 }
 
 type HeaderAttributes struct {
@@ -89,13 +91,13 @@ type MapGrid struct {
 
 type DataMapGrid struct {
 	orm.ModelBase
-	ID    string `json:"_id"`
-	Name  string `json:"name"`
-	Value string `json:"value"`
+	ID       string `json:"_id"`
+	GridName string `json:"gridName"`
+	FileName string `json:"fileName"`
 }
 
 func (sl *Selector) TableName() string {
-	return "selectors"
+	return filepath.Join("widget", "selectors")
 }
 
 func (sl *Selector) RecordID() interface{} {
@@ -103,7 +105,7 @@ func (sl *Selector) RecordID() interface{} {
 }
 
 func (mg *MapGrid) TableName() string {
-	return "mapgrids"
+	return filepath.Join("widget", "mapgrids")
 }
 
 func (mg *MapGrid) RecordID() interface{} {
@@ -111,7 +113,7 @@ func (mg *MapGrid) RecordID() interface{} {
 }
 
 func (dmg *DataMapGrid) TableName() string {
-	return "datamapgrids"
+	return filepath.Join("widget", "datamapgrids")
 }
 
 func (dmg *DataMapGrid) RecordID() interface{} {
@@ -119,7 +121,8 @@ func (dmg *DataMapGrid) RecordID() interface{} {
 }
 
 func (g *Grid) TableName() string {
-	return "grids"
+	filename := g.ID
+	return filepath.Join("widget", "grid", filename)
 }
 
 func (g *Grid) RecordID() interface{} {
