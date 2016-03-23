@@ -6,9 +6,9 @@ import (
 
 type Grid struct {
 	orm.ModelBase
-	ID           string            `json:"id"`
+	ID           string            `json:"_id"`
 	Title        string            `json:"title"`
-	DataSourceID string            `json:"dataSourceKey"`
+	DataSourceID string            `json:"dataSourceID"`
 	Aggregate    []AggregateColumn `json:"aggregate"`
 	Outsider     Outsider          `json:"outsider"`
 	PageSize     int               `json:"pageSize"`
@@ -29,6 +29,19 @@ type Outsider struct {
 	// DataSourceKey string `json:"dataSourceKey"`
 	VisiblePDF   bool `json:"visiblePDF"`
 	VisibleExcel bool `json:"visibleExcel"`
+}
+
+type Selector struct {
+	ID               string      `json:"_id"`
+	MasterDataSource string      `json:"masterDataSource"`
+	Title            string      `json:"title"`
+	Fields           FieldDetail `json:"fields"`
+}
+
+type FieldDetail struct {
+	ID         string `json:"_id"`
+	DataSource string `json:"dataSource"`
+	Field      string `json:"field"`
 }
 
 type ExportGrid struct {
@@ -70,15 +83,23 @@ type HeaderAttributes struct {
 
 type MapGrid struct {
 	orm.ModelBase
-	ID   int           `json:"id"`
+	ID   int           `json:"_id"`
 	Data []DataMapGrid `json:"data"`
 }
 
 type DataMapGrid struct {
 	orm.ModelBase
-	ID    string `json:"id"`
+	ID    string `json:"_id"`
 	Name  string `json:"name"`
 	Value string `json:"value"`
+}
+
+func (sl *Selector) TableName() string {
+	return "selectors"
+}
+
+func (sl *Selector) RecordID() interface{} {
+	return sl.ID
 }
 
 func (mg *MapGrid) TableName() string {
