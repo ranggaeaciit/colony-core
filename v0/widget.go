@@ -2,8 +2,17 @@ package colonycore
 
 import (
 	"github.com/eaciit/orm/v1"
+	"github.com/eaciit/toolkit"
 	"path/filepath"
 )
+
+/*========================WIDGET GRID ================================*/
+type MapGrid struct {
+	orm.ModelBase
+	ID       string `json:"_id"`
+	GridName string `json:"gridName"`
+	FileName string `json:"fileName"`
+}
 
 type Grid struct {
 	orm.ModelBase
@@ -25,35 +34,14 @@ type Grid struct {
 }
 
 type Outsider struct {
-	// IdGrid        string `json:"idGrid"`
-	// Title         string `json:"title"`
-	// DataSourceKey string `json:"dataSourceKey"`
 	VisiblePDF   bool `json:"visiblePDF"`
 	VisibleExcel bool `json:"visibleExcel"`
-}
-
-type Selector struct {
-	orm.ModelBase
-	ID               string         `json:"_id"`
-	MasterDataSource string         `json:"masterDataSource"`
-	Title            string         `json:"title"`
-	Fields           []*FieldDetail `json:"fields"`
-}
-
-type FieldDetail struct {
-	ID         string `json:"_id"`
-	DataSource string `json:"dataSource"`
-	Field      string `json:"field"`
 }
 
 type ExportGrid struct {
 	AllPages string `json:"allPages"`
 	FileName string `json:"fileName"`
 }
-
-/*type DataSource struct {
-	Aggregate []AggregateColumn `json:"aggregate"`
-}*/
 
 type AggregateColumn struct {
 	Field     string `json:"field"`
@@ -83,18 +71,98 @@ type HeaderAttributes struct {
 	Style string `json:"style"`
 }
 
-type MapGrid struct {
+/*type MapGrid struct {
 	orm.ModelBase
 	ID   int           `json:"_id"`
 	Data []DataMapGrid `json:"data"`
+}*/
+
+/*======================== END OF WIDGET GRID ================================*/
+
+/*========================WIDGET SELECTOR ================================*/
+
+type Selector struct {
+	orm.ModelBase
+	ID               string         `json:"_id"`
+	MasterDataSource string         `json:"masterDataSource"`
+	Title            string         `json:"title"`
+	Fields           []*FieldDetail `json:"fields"`
 }
 
-type DataMapGrid struct {
-	orm.ModelBase
-	ID       string `json:"_id"`
-	GridName string `json:"gridName"`
-	FileName string `json:"fileName"`
+type FieldDetail struct {
+	ID         string `json:"_id"`
+	DataSource string `json:"dataSource"`
+	Field      string `json:"field"`
 }
+
+/*======================== END OF WIDGET SELECTOR ================================*/
+
+/*======================== WIDGET CHART ================================*/
+
+type MapChart struct {
+	orm.ModelBase
+	ID        string `json:"_id"`
+	ChartName string `json:"chartName"`
+	FileName  string `json:"fileName"`
+}
+
+type Chart struct {
+	orm.ModelBase
+	ID                string          `json:"_id"`
+	Outsiders         *Outsiders      `json:"outsiders"`
+	Title             string          `json:"title"`
+	DataSourceID      string          `json:"dataSourceID"`
+	ChartArea         *ChartArea      `json:"chartArea"`
+	dataSource        toolkit.M       `json:"dataSource"`
+	Legend            *Legend         `json:"legend"`
+	SeriesDefaultType string          `json:"seriesDefaultType"`
+	Series            *Series         `json:"series"`
+	ValueAxis         *ValueAxis      `json:"valueAxis"`
+	CategoryAxis      []*CategoryAxis `json:"categoryAxis"`
+	Tooltip           *Tooltip        `json:"tooltip"`
+}
+
+type Outsiders struct {
+	WidthMode           string `json:"widthMode"`
+	HeightMode          string `json:"heightMode"`
+	ValueAxisUseMaxMode bool   `json:"valueAxisUseMaxMode"`
+	ValueAxisUseMinMode bool   `json:"valueAxisUseMinMode"`
+}
+
+type ChartArea struct {
+	Height int `json:"height"`
+	Width  int `json:"width"`
+}
+
+type Legend struct {
+	Visible bool `json:"visible"`
+}
+
+type Series struct {
+	Field string `json:"field"`
+	Name  string `json:"name"`
+	Types bool   `json:"types"`
+}
+
+type ValueAxis struct {
+	Max            int  `json:"max"`
+	Min            int  `json:"min"`
+	Types          bool `json:"types"`
+	Line           bool `json:"line"`
+	MinorGridLines bool `json:"minorGridLines"`
+	LabelsRotation int  `json:"labelsRotation"`
+}
+
+type CategoryAxis struct {
+	Field string `json:"field"`
+}
+
+type Tooltip struct {
+	Visible  bool   `json:"visible"`
+	Template string `json:"template"`
+}
+
+/*======================== END OF WIDGET CHART ================================*/
 
 func (sl *Selector) TableName() string {
 	return filepath.Join("widget", "selectors")
@@ -112,19 +180,34 @@ func (mg *MapGrid) RecordID() interface{} {
 	return mg.ID
 }
 
-func (dmg *DataMapGrid) TableName() string {
+/*func (dmg *DataMapGrid) TableName() string {
 	return filepath.Join("widget", "datamapgrids")
 }
 
 func (dmg *DataMapGrid) RecordID() interface{} {
 	return dmg.ID
-}
+}*/
 
 func (g *Grid) TableName() string {
-	filename := g.ID
-	return filepath.Join("widget", "grid", filename)
+	return filepath.Join("widget", "grid", g.ID)
 }
 
 func (g *Grid) RecordID() interface{} {
 	return g.ID
+}
+
+func (mc *MapChart) TableName() string {
+	return filepath.Join("widget", "mapcharts")
+}
+
+func (mc *MapChart) RecordID() interface{} {
+	return mc.ID
+}
+
+func (c *Chart) TableName() string {
+	return filepath.Join("widget", "chart", c.ID)
+}
+
+func (c *Chart) RecordID() interface{} {
+	return c.ID
 }
