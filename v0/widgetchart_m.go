@@ -1,9 +1,9 @@
 package colonycore
 
 import (
-	// "github.com/eaciit/dbox"
+	"github.com/eaciit/dbox"
 	"github.com/eaciit/orm/v1"
-	// "os"
+	"os"
 	"path/filepath"
 )
 
@@ -82,10 +82,86 @@ func (mc *MapChart) RecordID() interface{} {
 	return mc.ID
 }
 
+func (mc *MapChart) Get(search string) ([]MapChart, error) {
+	var query *dbox.Filter
+
+	if search != "" {
+		query = dbox.Contains("_id", search)
+	}
+
+	mapchart := []MapChart{}
+	cursor, err := Find(new(MapChart), query)
+	if err != nil {
+		return mapchart, err
+	}
+
+	err = cursor.Fetch(&mapchart, 0, false)
+	if err != nil {
+		return mapchart, err
+	}
+	defer cursor.Close()
+	return mapchart, nil
+}
+
+func (mc *MapChart) Delete() error {
+	if err := Delete(mc); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (c *Chart) TableName() string {
 	return filepath.Join("widget", "chart", c.ID)
 }
 
 func (c *Chart) RecordID() interface{} {
 	return c.ID
+}
+
+func (c *Chart) GetById() error {
+	if err := Get(c, c.ID); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Chart) Save() error {
+	newChart := MapChart{}
+	mapchart, err := newChart.Get("")
+	if err != nil {
+		return err
+	}
+
+	var isUpdate bool
+
+	for _, eachRaw := range mapchart {
+		if eachRaw.FileName == c.ID+".json" {
+			eachRaw.ChartName = c.Title
+			isUpdate = true
+			newChart = eachRaw
+		}
+	}
+
+	if !isUpdate {
+		newChart.ID = c.ID
+		newChart.FileName = c.ID + ".json"
+		newChart.ChartName = c.Title
+	}
+
+	if err := Save(&newChart); err != nil {
+		return err
+	}
+
+	if err := Save(c); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Chart) Remove() error {
+	_file := filepath.Join(ConfigPath, "widget", "chart", c.ID+".json")
+	if err := os.Remove(_file); err != nil {
+		return err
+	}
+	return nil
 }
