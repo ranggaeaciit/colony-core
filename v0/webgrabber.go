@@ -51,10 +51,12 @@ type DataSettings struct {
 	Nameid         string            `json:"nameid",bson:"nameid"`
 	RowSelector    string            `json:"rowselector",bson:"rowselector"`
 	ColumnSettings []*ColumnSettings `json:"columnsettings",bson:"columnsettings"`
-	FilterCond     toolkit.M         `json:"filtercond",bson:"filtercond"`
-	DestOutputType string            `json:"destoutputtype",bson:"destoutputtype"`
-	DestType       string            `json:"desttype",bson:"desttype"`
-	ConnectionInfo *ConnectionInfo   `json:"connectioninfo",bson:"connectioninfo"`
+
+	LimitRow       toolkit.M       `json:"limitrow",bson:"limitrow"`
+	FilterCond     toolkit.M       `json:"filtercond",bson:"filtercond"`
+	DestOutputType string          `json:"destoutputtype",bson:"destoutputtype"`
+	DestType       string          `json:"desttype",bson:"desttype"`
+	ConnectionInfo *ConnectionInfo `json:"connectioninfo",bson:"connectioninfo"`
 }
 
 type ColumnSettings struct {
