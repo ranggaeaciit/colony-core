@@ -7,159 +7,156 @@ import (
 	"path/filepath"
 )
 
-type MapChart struct {
+type MapGrid struct {
 	orm.ModelBase
-	ID        string `json:"_id"`
-	ChartName string `json:"chartName"`
-	FileName  string `json:"fileName"`
+	ID       string `json:"_id"`
+	GridName string `json:"gridName"`
+	FileName string `json:"fileName"`
 }
 
-type Chart struct {
+type Grid struct {
 	orm.ModelBase
-	ID                string          `json:"_id"`
-	Outsiders         *Outsiders      `json:"outsiders"`
-	Title             string          `json:"title"`
-	DataSourceID      string          `json:"dataSourceID"`
-	ChartArea         *ChartArea      `json:"chartArea"`
-	dataSource        *DataSources    `json:"dataSource"`
-	Legend            *Legend         `json:"legend"`
-	SeriesDefaultType string          `json:"seriesDefaultType"`
-	Series            *Series         `json:"series"`
-	ValueAxis         *ValueAxis      `json:"valueAxis"`
-	CategoryAxis      []*CategoryAxis `json:"categoryAxis"`
-	Tooltip           *Tooltip        `json:"tooltip"`
+	ID           string             `json:"_id"`
+	Title        string             `json:"title"`
+	DataSourceID string             `json:"dataSourceID"`
+	Aggregate    []*AggregateColumn `json:"aggregate"`
+	Outsider     *Outsider          `json:"outsider"`
+	PageSize     int                `json:"pageSize"`
+	Groupable    bool               `json:"groupable"`
+	Sortable     bool               `json:"sortable"`
+	Filterable   bool               `json:"filterable"`
+	Pageable     *Pageable          `json:"pageable"`
+	Columns      []*Column          `json:"columns"`
+	ColumnMenu   bool               `json:"columnMenu"`
+	Toolbar      []string           `json:"toolbar"`
+	Pdf          *ExportGrid        `json:"pdf"`
+	Excel        *ExportGrid        `json:"excel"`
 }
 
-type Outsiders struct {
-	WidthMode           string `json:"widthMode"`
-	HeightMode          string `json:"heightMode"`
-	ValueAxisUseMaxMode bool   `json:"valueAxisUseMaxMode"`
-	ValueAxisUseMinMode bool   `json:"valueAxisUseMinMode"`
+type AggregateColumn struct {
+	Field     string `json:"field"`
+	Aggregate string `json:"aggregate"`
 }
 
-type ChartArea struct {
-	Height int `json:"height"`
-	Width  int `json:"width"`
+type Outsider struct {
+	VisiblePDF   bool `json:"visiblePDF"`
+	VisibleExcel bool `json:"visibleExcel"`
 }
 
-type DataSources struct {
-	data []string
+type Pageable struct {
+	Refresh     bool `json:"refresh"`
+	PageSize    bool `json:"pageSize"`
+	ButtonCount int  `json:"buttonCount"`
 }
 
-type Legend struct {
-	Visible bool `json:"visible"`
+type ExportGrid struct {
+	AllPages bool   `json:"allPages"`
+	FileName string `json:"fileName"`
 }
 
-type Series struct {
-	Field string `json:"field"`
-	Name  string `json:"name"`
-	Types bool   `json:"types"`
+type Column struct {
+	Template         string            `json:"template"`
+	Field            string            `json:"field"`
+	Title            string            `json:"title"`
+	Format           string            `json:"format"`
+	Width            string            `json:"width"`
+	Menu             bool              `json:"menu"`
+	HeaderTemplate   string            `json:"headerTemplate"`
+	HeaderAttributes *HeaderAttributes `json:"headerAttributes"`
+	FooterTemplate   string            `json:"footerTemplate"`
 }
 
-type ValueAxis struct {
-	Max            int  `json:"max"`
-	Min            int  `json:"min"`
-	Types          bool `json:"types"`
-	Line           bool `json:"line"`
-	MinorGridLines bool `json:"minorGridLines"`
-	LabelsRotation int  `json:"labelsRotation"`
+type HeaderAttributes struct {
+	Class string `json:"class"`
+	Style string `json:"style"`
 }
 
-type CategoryAxis struct {
-	Field string `json:"field"`
+func (mg *MapGrid) TableName() string {
+	return filepath.Join("widget", "mapgrids")
 }
 
-type Tooltip struct {
-	Visible  bool   `json:"visible"`
-	Template string `json:"template"`
+func (mg *MapGrid) RecordID() interface{} {
+	return mg.ID
 }
 
-func (mc *MapChart) TableName() string {
-	return filepath.Join("widget", "mapcharts")
-}
-
-func (mc *MapChart) RecordID() interface{} {
-	return mc.ID
-}
-
-func (mc *MapChart) Get(search string) ([]MapChart, error) {
+func (mg *MapGrid) Get(search string) ([]MapGrid, error) {
 	var query *dbox.Filter
 
 	if search != "" {
 		query = dbox.Contains("_id", search)
 	}
 
-	mapchart := []MapChart{}
-	cursor, err := Find(new(MapChart), query)
+	mapgrid := []MapGrid{}
+	cursor, err := Find(new(MapGrid), query)
 	if err != nil {
-		return mapchart, err
+		return mapgrid, err
 	}
 
-	err = cursor.Fetch(&mapchart, 0, false)
+	err = cursor.Fetch(&mapgrid, 0, false)
 	if err != nil {
-		return mapchart, err
+		return mapgrid, err
 	}
 	defer cursor.Close()
-	return mapchart, nil
+	return mapgrid, nil
 }
 
-func (mc *MapChart) Delete() error {
-	if err := Delete(mc); err != nil {
+func (mg *MapGrid) Delete() error {
+	if err := Delete(mg); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c *Chart) TableName() string {
-	return filepath.Join("widget", "chart", c.ID)
+func (g *Grid) TableName() string {
+	return filepath.Join("widget", "grid", g.ID)
 }
 
-func (c *Chart) RecordID() interface{} {
-	return c.ID
+func (g *Grid) RecordID() interface{} {
+	return g.ID
 }
 
-func (c *Chart) GetById() error {
-	if err := Get(c, c.ID); err != nil {
+func (g *Grid) GetById() error {
+	if err := Get(g, g.ID); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c *Chart) Save() error {
-	newChart := MapChart{}
-	mapchart, err := newChart.Get("")
+func (g *Grid) Save() error {
+	newGrid := MapGrid{}
+	mapgrid, err := newGrid.Get("")
 	if err != nil {
 		return err
 	}
 
 	var isUpdate bool
 
-	for _, eachRaw := range mapchart {
-		if eachRaw.FileName == c.ID+".json" {
-			eachRaw.ChartName = c.Title
+	for _, eachRaw := range mapgrid {
+		if eachRaw.FileName == g.ID+".json" {
+			eachRaw.GridName = g.Title
 			isUpdate = true
-			newChart = eachRaw
+			newGrid = eachRaw
 		}
 	}
 
 	if !isUpdate {
-		newChart.ID = c.ID
-		newChart.FileName = c.ID + ".json"
-		newChart.ChartName = c.Title
+		newGrid.ID = g.ID
+		newGrid.FileName = g.ID + ".json"
+		newGrid.GridName = g.Title
 	}
 
-	if err := Save(&newChart); err != nil {
+	if err := Save(&newGrid); err != nil {
 		return err
 	}
 
-	if err := Save(c); err != nil {
+	if err := Save(g); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c *Chart) Remove() error {
-	_file := filepath.Join(ConfigPath, "widget", "chart", c.ID+".json")
+func (g *Grid) Remove() error {
+	_file := filepath.Join(ConfigPath, "widget", "grid", g.ID+".json")
 	if err := os.Remove(_file); err != nil {
 		return err
 	}
