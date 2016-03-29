@@ -3,12 +3,13 @@ package colonycore
 import (
 	"github.com/eaciit/errorlib"
 	// "github.com/eaciit/orm/v1"
-	"github.com/eaciit/toolkit"
 	// "log"
 	"mime/multipart"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/eaciit/toolkit"
 )
 
 const (
@@ -60,7 +61,7 @@ func ConstructFileInfo(lines string, path string) ([]FileInfo, error) {
 					res, e := parse(val, path)
 					if e != nil {
 						return result, e
-					} else {
+					} else if res.Name != "" {
 						result = append(result, res)
 					}
 				}
@@ -95,48 +96,50 @@ func parse(line string, path string) (result FileInfo, e error) {
 		cols := strings.Split(strings.Trim(line, " "), "||")
 
 		if len(cols) == 9 {
-			result.Type = strings.TrimSpace(cols[0][:1])
-			result.Sub = nil
+			if cols[0] != "" || strings.TrimSpace(cols[8]) != "" {
+				result.Type = strings.TrimSpace(cols[0][:1])
+				result.Sub = nil
 
-			if result.Type == "d" {
-				result.IsDir = true
-			}
-
-			result.Permissions = strings.TrimSpace(cols[0][1:])
-
-			subCount, _ := strconv.ParseInt(strings.TrimSpace(cols[1]), 10, 64)
-			result.SubCount = subCount
-
-			result.User = strings.TrimSpace(cols[2])
-
-			result.Group = strings.TrimSpace(cols[3])
-
-			size, _ := strconv.ParseFloat(strings.TrimSpace(cols[4]), 64)
-			result.Size = size
-
-			var lastModified time.Time
-			str := strings.TrimSpace(cols[5]) + "-" + strings.TrimSpace(cols[6]) + "-" + strings.TrimSpace(cols[7])
-
-			if len(strings.TrimSpace(cols[7])) == 5 {
-				str = str + "-" + strconv.Itoa(time.Now().Year())
-				lastModified = toolkit.String2Date(str, "MMM-d-H:mm-YYYY")
-			} else {
-				lastModified = toolkit.String2Date(str, "MMM-d-YYYY")
-			}
-
-			result.LastModified = lastModified
-
-			result.Name = strings.TrimSpace(cols[8])
-
-			if len(path) > 1 {
-				if path[len(path)-1:] != DELIMITER {
-					path = path + DELIMITER
+				if result.Type == "d" {
+					result.IsDir = true
 				}
 
-				result.Path = path + result.Name
-			}
+				result.Permissions = strings.TrimSpace(cols[0][1:])
 
-			result.IsEditable = true
+				subCount, _ := strconv.ParseInt(strings.TrimSpace(cols[1]), 10, 64)
+				result.SubCount = subCount
+
+				result.User = strings.TrimSpace(cols[2])
+
+				result.Group = strings.TrimSpace(cols[3])
+
+				size, _ := strconv.ParseFloat(strings.TrimSpace(cols[4]), 64)
+				result.Size = size
+
+				var lastModified time.Time
+				str := strings.TrimSpace(cols[5]) + "-" + strings.TrimSpace(cols[6]) + "-" + strings.TrimSpace(cols[7])
+
+				if len(strings.TrimSpace(cols[7])) == 5 {
+					str = str + "-" + strconv.Itoa(time.Now().Year())
+					lastModified = toolkit.String2Date(str, "MMM-d-H:mm-YYYY")
+				} else {
+					lastModified = toolkit.String2Date(str, "MMM-d-YYYY")
+				}
+
+				result.LastModified = lastModified
+
+				result.Name = strings.TrimSpace(cols[8])
+
+				if len(path) > 1 {
+					if path[len(path)-1:] != DELIMITER {
+						path = path + DELIMITER
+					}
+
+					result.Path = path + result.Name
+				}
+
+				result.IsEditable = true
+			}
 		} else {
 			e = errorlib.Error("", "", "parse", "column is not valid")
 		}
