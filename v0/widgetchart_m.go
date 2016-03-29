@@ -16,21 +16,25 @@ type MapChart struct {
 
 type Chart struct {
 	orm.ModelBase
-	ID                string          `json:"_id"`
-	Outsiders         *Outsiders      `json:"outsiders"`
-	Title             string          `json:"title"`
-	DataSourceID      string          `json:"dataSourceID"`
-	ChartArea         *ChartArea      `json:"chartArea"`
-	dataSource        *DataSources    `json:"dataSource"`
-	Legend            *Legend         `json:"legend"`
-	SeriesDefaultType string          `json:"seriesDefaultType"`
-	Series            *Series         `json:"series"`
-	ValueAxis         *ValueAxis      `json:"valueAxis"`
-	CategoryAxis      []*CategoryAxis `json:"categoryAxis"`
-	Tooltip           *Tooltip        `json:"tooltip"`
+	ID             string          `json:"_id"`
+	Title          string          `json:"title"`
+	DataSourceID   string          `json:"dataSourceID"`
+	DataSource     *DataSourceData `json: "dataSource"`
+	ChartArea      *ChartArea      `json:"chartArea"`
+	Outsider       *OutSider       `json:"outsider"`
+	SeriesDefaults *SeriesDefault  `json:"seriesDefaults"`
+	Series         []*Series       `json:"series"`
+	CategoryAxis   *CategoryAxis   `json:"categoryAxis"`
+	ValueAxis      *ValueAxis      `json:"valueAxis"`
+	Tooltip        *Tooltip        `json:"tooltip"`
+	Legend         *Legend         `json:"legend"`
 }
 
-type Outsiders struct {
+type DataSourceData struct {
+	Data []*map[string]interface{} `json:"data"`
+}
+
+type OutSider struct {
 	WidthMode           string `json:"widthMode"`
 	HeightMode          string `json:"heightMode"`
 	ValueAxisUseMaxMode bool   `json:"valueAxisUseMaxMode"`
@@ -42,10 +46,6 @@ type ChartArea struct {
 	Width  int `json:"width"`
 }
 
-type DataSources struct {
-	data []string
-}
-
 type Legend struct {
 	Visible bool `json:"visible"`
 }
@@ -53,16 +53,27 @@ type Legend struct {
 type Series struct {
 	Field string `json:"field"`
 	Name  string `json:"name"`
-	Types bool   `json:"types"`
+	Type  string `json:"type"`
 }
 
 type ValueAxis struct {
-	Max            int  `json:"max"`
-	Min            int  `json:"min"`
-	Types          bool `json:"types"`
-	Line           bool `json:"line"`
-	MinorGridLines bool `json:"minorGridLines"`
-	LabelsRotation int  `json:"labelsRotation"`
+	Max            int            `json:"max"`
+	Min            int            `json:"min"`
+	Line           *Line          `json:"line"`
+	MinorGridLines *MinorGridLine `json:"minorGridLines"`
+	Labels         *Label         `json:"labels"`
+}
+
+type Line struct {
+	Visible bool `json: "visible"`
+}
+
+type MinorGridLine struct {
+	Visible bool `json: "visible"`
+}
+
+type Label struct {
+	Rotation int `json: "rotation"`
 }
 
 type CategoryAxis struct {
@@ -72,6 +83,10 @@ type CategoryAxis struct {
 type Tooltip struct {
 	Visible  bool   `json:"visible"`
 	Template string `json:"template"`
+}
+
+type SeriesDefault struct {
+	Type string `json: "type"`
 }
 
 func (mc *MapChart) TableName() string {
