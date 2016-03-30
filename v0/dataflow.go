@@ -59,7 +59,7 @@ type ActionQuestion struct {
 }
 
 type ActionDecision struct {
-	Conditions []Conditions `json:"conditions"`
+	Conditions []Condition `json:"conditions"`
 	// other field will be different for each action type
 }
 
