@@ -33,12 +33,12 @@ const (
 // and also have the list of the actions inside the flow
 // Actions list of action, the content of the action can be FlowAction or "list of FlowAction" -> for fork action
 type DataFlow struct {
-	Id          string        `json:"_id"`
-	Name        string        `json:"name"`
-	Description string        `json:"description"`
-	CreatedDate time.Time     `json:"createddate"`
-	CreatedBy   string        `json:"createdby"`
-	Actions     []interface{} `json:"actions"`
+	Id          string       `json:"_id"`
+	Name        string       `json:"name"`
+	Description string       `json:"description"`
+	CreatedDate time.Time    `json:"createddate"`
+	CreatedBy   string       `json:"createdby"`
+	Actions     []FlowAction `json:"actions"`
 }
 
 // FlowAction define the action that exist
@@ -56,10 +56,11 @@ type FlowAction struct {
 	Type        string      `json:"type"`
 	Server      Server      `json:"server"`
 	Action      interface{} `json:"action"`
-	OK          interface{} `json:"ok"`
-	KO          interface{} `json:"ko"`
+	OK          []string    `json:"ok"`
+	KO          []string    `json:"ko"`
 	Retry       int         `json:"retry"`
 	Interval    int         `json:"interval"`
+	FirstAction bool
 }
 
 // ActionHive action for HIVE
@@ -166,8 +167,8 @@ type Condition struct {
 // ActionFork to define the forking condition
 // Type refer to cons FORK_TYPE_*
 type ActionFork struct {
-	Actions []interface{} `json:"actions"`
-	Type    string        `json: "type"`
+	Actions []FlowAction `json:"actions"`
+	Type    string       `json: "type"`
 }
 
 type DataFlowProcess struct {
