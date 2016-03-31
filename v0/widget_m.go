@@ -6,20 +6,21 @@ import (
 	"github.com/eaciit/toolkit"
 	"io/ioutil"
 	"os"
-	"os/exec"
+	// "os/exec"
 	"path/filepath"
-	"runtime"
+	// "runtime"
 	"strings"
 )
 
 type Widget struct {
 	orm.ModelBase
-	ID           string              `json:"_id"`
-	Title        string              `json:"title"`
-	DataSourceID []string            `json:"dataSourceId"`
-	DataSource   []*DataSourceWidget `json:"dataSource"`
-	Description  string              `json:"description"`
-	Params       toolkit.M           `json:"params"`
+	ID    string `json:"_id"`
+	Title string `json:"title"`
+	// DataSourceID []string            `json:"dataSourceId"`
+	DataSource  []*DataSourceWidget `json:"dataSource"`
+	Description string              `json:"description"`
+	Config      toolkit.Ms          `json:"config"`
+	Params      toolkit.M           `json:"params"`
 }
 
 type DataSourceWidget struct {
@@ -29,7 +30,7 @@ type DataSourceWidget struct {
 
 type Config struct {
 	orm.ModelBase
-	data []toolkit.M `json:"data"`
+	data toolkit.M `json:"data"`
 }
 
 func (w *Widget) TableName() string {
@@ -106,45 +107,59 @@ func checkDir(basepath string, scanDir string, dirName string) error {
 	return nil
 }
 
-func (w *Widget) ExtractFile(compressedSource string, fileName string) error {
+func (w *Widget) ExtractFile(compressedSource string, fileName string) (toolkit.Ms, error) {
 	compressedFile := filepath.Join(compressedSource, fileName)
 	extractDest := filepath.Join(compressedSource, w.ID)
 
-	if runtime.GOOS == "windows" {
-		exec.Command("cmd", "/C", "rmdir", "/s", "/q", extractDest).Run()
-	} else {
-		exec.Command("rm", "-rf", extractDest).Run()
+	if err := os.RemoveAll(extractDest); err != nil {
+		return nil, err
 	}
 
 	if strings.Contains(fileName, ".tar.gz") {
 		if err := toolkit.TarGzExtract(compressedFile, extractDest); err != nil {
-			return err
+			return nil, err
 		}
 	} else if strings.Contains(fileName, ".gz") {
 		if err := toolkit.GzExtract(compressedFile, extractDest); err != nil {
-			return err
+			return nil, err
 		}
 	} else if strings.Contains(fileName, ".tar") {
 		if err := toolkit.TarExtract(compressedFile, extractDest); err != nil {
-			return err
+			return nil, err
 		}
 	} else if strings.Contains(fileName, ".zip") {
 		if err := toolkit.ZipExtract(compressedFile, extractDest); err != nil {
-			return err
+			return nil, err
 		}
 	}
 
 	if err := os.Remove(compressedFile); err != nil {
+		return nil, err
+	}
+
+	getConfigFile := filepath.Join(extractDest, "config.json")
+	content, err := ioutil.ReadFile(getConfigFile)
+	if err != nil {
+		return nil, err
+	}
+
+	result := toolkit.Ms{}
+	err = toolkit.Unjson(content, &result)
+	if err != nil {
+		return nil, err
+	}
+	// checkDir(compressedSource, extractDest, w.ID)
+
+	return result, nil
+}
+
+func (w *Widget) Delete(compressedSource string) error {
+	extractDest := filepath.Join(compressedSource, w.ID)
+	if err := Delete(w); err != nil {
 		return err
 	}
 
-	// checkDir(compressedSource, extractDest, w.ID)
-
-	return nil
-}
-
-func (w *Widget) Delete() error {
-	if err := Delete(w); err != nil {
+	if err := os.RemoveAll(extractDest); err != nil {
 		return err
 	}
 	return nil
