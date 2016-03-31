@@ -14,9 +14,8 @@ import (
 
 type Widget struct {
 	orm.ModelBase
-	ID    string `json:"_id"`
-	Title string `json:"title"`
-	// DataSourceID []string            `json:"dataSourceId"`
+	ID          string              `json:"_id"`
+	Title       string              `json:"title"`
 	DataSource  []*DataSourceWidget `json:"dataSource"`
 	Description string              `json:"description"`
 	Config      toolkit.Ms          `json:"config"`
