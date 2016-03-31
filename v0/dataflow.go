@@ -31,14 +31,14 @@ const (
 
 // DataFlow to define the flow name and description
 // and also have the list of the actions inside the flow
-// Actions list of action
+// Actions list of action, the content of the action can be FlowAction or "list of FlowAction" -> for fork action
 type DataFlow struct {
-	Id          string       `json:"_id"`
-	Name        string       `json:"name"`
-	Description string       `json:"description"`
-	CreatedDate time.Time    `json:"createddate"`
-	CreatedBy   string       `json:"createdby"`
-	Actions     []FlowAction `json:"actions"`
+	Id          string        `json:"_id"`
+	Name        string        `json:"name"`
+	Description string        `json:"description"`
+	CreatedDate time.Time     `json:"createddate"`
+	CreatedBy   string        `json:"createdby"`
+	Actions     []interface{} `json:"actions"`
 }
 
 // FlowAction define the action that exist
@@ -168,4 +168,13 @@ type Condition struct {
 type ActionFork struct {
 	Actions []interface{} `json:"actions"`
 	Type    string        `json: "type"`
+}
+
+type DataFlowProcess struct {
+	Id          string `json:"_id"`
+	Flow        DataFlow
+	Steps       []FlowAction
+	StartDate   time.Time
+	EndDate     time.Time
+	UserStarted string
 }
