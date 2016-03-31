@@ -14,16 +14,17 @@ import (
 
 type Widget struct {
 	orm.ModelBase
-	ID           string    `json:"_id"`
-	Title        string    `json:"title"`
-	DataSourceID []string  `json:"dataSourceId"`
-	Description  string    `json:"description"`
-	Params       toolkit.M `json:"params"`
+	ID           string              `json:"_id"`
+	Title        string              `json:"title"`
+	DataSourceID []string            `json:"dataSourceId"`
+	DataSource   []*DataSourceWidget `json:"dataSource"`
+	Description  string              `json:"description"`
+	Params       toolkit.M           `json:"params"`
 }
 
 type DataSourceWidget struct {
 	ID   string      `json:"_id"`
-	data []toolkit.M `json:"data"`
+	Data []toolkit.M `json:"data"`
 }
 
 type Config struct {
