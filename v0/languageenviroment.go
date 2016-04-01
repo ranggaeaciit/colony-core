@@ -5,8 +5,8 @@ import (
 )
 
 type LanguageEnvironmentPayload struct {
-	ServerId string   `json:"ServerId"`
-	Lang     []string `json:"Lang"`
+	ServerId string `json:"ServerId"`
+	Lang     string `json:"Lang"`
 }
 
 type LanguageEnviroment struct {
