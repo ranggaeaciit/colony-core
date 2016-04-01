@@ -6,20 +6,22 @@ import (
 	"github.com/eaciit/toolkit"
 	"io/ioutil"
 	"os"
-	"os/exec"
+	// "os/exec"
 	"path/filepath"
-	"runtime"
+	// "runtime"
 	"strings"
 )
 
 type Widget struct {
 	orm.ModelBase
-	ID           string              `json:"_id"`
-	Title        string              `json:"title"`
-	DataSourceID []string            `json:"dataSourceId"`
-	DataSource   []*DataSourceWidget `json:"dataSource"`
-	Description  string              `json:"description"`
-	Params       toolkit.M           `json:"params"`
+	ID    string `json:"_id"`
+	Title string `json:"title"`
+	// DataSourceID []string            `json:"dataSourceId"`
+	DataSource  []*DataSourceWidget `json:"dataSource"`
+	Description string              `json:"description"`
+	Config      []*Config           `json:"config"`
+	Params      toolkit.M           `json:"params"`
+	Path        string
 }
 
 type DataSourceWidget struct {
@@ -110,10 +112,8 @@ func (w *Widget) ExtractFile(compressedSource string, fileName string) error {
 	compressedFile := filepath.Join(compressedSource, fileName)
 	extractDest := filepath.Join(compressedSource, w.ID)
 
-	if runtime.GOOS == "windows" {
-		exec.Command("cmd", "/C", "rmdir", "/s", "/q", extractDest).Run()
-	} else {
-		exec.Command("rm", "-rf", extractDest).Run()
+	if err := os.RemoveAll(extractDest); err != nil {
+		return err
 	}
 
 	if strings.Contains(fileName, ".tar.gz") {
@@ -138,13 +138,28 @@ func (w *Widget) ExtractFile(compressedSource string, fileName string) error {
 		return err
 	}
 
+	getConfigFile := filepath.Join(extractDest, "config.json")
+	content, err := ioutil.ReadFile(getConfigFile)
+	if err != nil {
+		return err
+	}
+
+	// contentstring := string(content)
+	var result = Config{}.data
+	toolkit.Unjson(content, &result)
+	toolkit.Println(result, string(content))
 	// checkDir(compressedSource, extractDest, w.ID)
 
 	return nil
 }
 
-func (w *Widget) Delete() error {
+func (w *Widget) Delete(compressedSource string) error {
+	extractDest := filepath.Join(compressedSource, w.ID)
 	if err := Delete(w); err != nil {
+		return err
+	}
+
+	if err := os.RemoveAll(extractDest); err != nil {
 		return err
 	}
 	return nil
