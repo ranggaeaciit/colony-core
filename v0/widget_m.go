@@ -91,11 +91,7 @@ func GetPath(root string) (string, error) {
 		return nil
 	}
 	if err = filepath.Walk(absRoot, walkFunc); err != nil {
-		if err.Error() == "found" {
-			return _path, nil
-		} else {
-			return "", err
-		}
+		return "", err
 	}
 
 	for _, valIndex := range indexPath {
