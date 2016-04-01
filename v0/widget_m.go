@@ -14,12 +14,14 @@ import (
 
 type Widget struct {
 	orm.ModelBase
-	ID          string              `json:"_id"`
-	Title       string              `json:"title"`
+	ID    string `json:"_id"`
+	Title string `json:"title"`
+	// DataSourceID []string            `json:"dataSourceId"`
 	DataSource  []*DataSourceWidget `json:"dataSource"`
 	Description string              `json:"description"`
-	Config      toolkit.Ms          `json:"config"`
+	Config      []*Config           `json:"config"`
 	Params      toolkit.M           `json:"params"`
+	Path        string
 }
 
 type DataSourceWidget struct {
@@ -29,7 +31,7 @@ type DataSourceWidget struct {
 
 type Config struct {
 	orm.ModelBase
-	data toolkit.M `json:"data"`
+	data []toolkit.M `json:"data"`
 }
 
 func (w *Widget) TableName() string {
@@ -106,50 +108,49 @@ func checkDir(basepath string, scanDir string, dirName string) error {
 	return nil
 }
 
-func (w *Widget) ExtractFile(compressedSource string, fileName string) (toolkit.Ms, error) {
+func (w *Widget) ExtractFile(compressedSource string, fileName string) error {
 	compressedFile := filepath.Join(compressedSource, fileName)
 	extractDest := filepath.Join(compressedSource, w.ID)
 
 	if err := os.RemoveAll(extractDest); err != nil {
-		return nil, err
+		return err
 	}
 
 	if strings.Contains(fileName, ".tar.gz") {
 		if err := toolkit.TarGzExtract(compressedFile, extractDest); err != nil {
-			return nil, err
+			return err
 		}
 	} else if strings.Contains(fileName, ".gz") {
 		if err := toolkit.GzExtract(compressedFile, extractDest); err != nil {
-			return nil, err
+			return err
 		}
 	} else if strings.Contains(fileName, ".tar") {
 		if err := toolkit.TarExtract(compressedFile, extractDest); err != nil {
-			return nil, err
+			return err
 		}
 	} else if strings.Contains(fileName, ".zip") {
 		if err := toolkit.ZipExtract(compressedFile, extractDest); err != nil {
-			return nil, err
+			return err
 		}
 	}
 
 	if err := os.Remove(compressedFile); err != nil {
-		return nil, err
+		return err
 	}
 
 	getConfigFile := filepath.Join(extractDest, "config.json")
 	content, err := ioutil.ReadFile(getConfigFile)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	result := toolkit.Ms{}
-	err = toolkit.Unjson(content, &result)
-	if err != nil {
-		return nil, err
-	}
+	// contentstring := string(content)
+	var result = Config{}.data
+	toolkit.Unjson(content, &result)
+	toolkit.Println(result, string(content))
 	// checkDir(compressedSource, extractDest, w.ID)
 
-	return result, nil
+	return nil
 }
 
 func (w *Widget) Delete(compressedSource string) error {
