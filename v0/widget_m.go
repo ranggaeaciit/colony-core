@@ -6,32 +6,24 @@ import (
 	"github.com/eaciit/toolkit"
 	"io/ioutil"
 	"os"
-	// "os/exec"
 	"path/filepath"
-	// "runtime"
 	"strings"
 )
 
 type Widget struct {
 	orm.ModelBase
-	ID    string `json:"_id"`
-	Title string `json:"title"`
-	// DataSourceID []string            `json:"dataSourceId"`
-	DataSource  []*DataSourceWidget `json:"dataSource"`
-	Description string              `json:"description"`
-	Config      []*Config           `json:"config"`
-	Params      toolkit.M           `json:"params"`
-	Path        string
+	ID           string     `json:"_id"`
+	Title        string     `json:"title"`
+	DataSourceId []string   `json:"dataSourceId"`
+	Description  string     `json:"description"`
+	Config       toolkit.Ms `json:"config"`
+	Params       toolkit.M  `json:"params"`
+	URL          string     `json:"url"`
 }
 
 type DataSourceWidget struct {
 	ID   string      `json:"_id"`
 	Data []toolkit.M `json:"data"`
-}
-
-type Config struct {
-	orm.ModelBase
-	data []toolkit.M `json:"data"`
 }
 
 func (w *Widget) TableName() string {
@@ -75,82 +67,103 @@ func (w *Widget) Save() error {
 	return nil
 }
 
-func checkDir(basepath string, scanDir string, dirName string) error {
-	dirList, err := ioutil.ReadDir(scanDir)
+func GetPath(root string) (string, error) {
+	absRoot, err := filepath.Abs(root)
 	if err != nil {
-		return err
+		return "", err
 	}
+	var _path string
+	var indexPath []string
+	var configPath []string
+	var assetPath []string
+	walkFunc := func(path string, info os.FileInfo, err error) error {
+		_path, filename := filepath.Split(path)
+		if strings.Compare(filename, "index.html") == 0 {
+			indexPath = append(indexPath, _path)
+		}
+		if strings.Compare(filename, "config.json") == 0 {
+			configPath = append(configPath, _path)
+		}
 
-	if toolkit.SliceLen(dirList) == 1 {
-		for _, f := range dirList {
-			if f.IsDir() {
-				oldpath := filepath.Join(scanDir, f.Name())
-				temp_oldpath := filepath.Join(scanDir, dirName)
-				if err := os.Rename(oldpath, temp_oldpath); err != nil {
-					return err
-				}
-				if err := toolkit.ZipCompress(temp_oldpath, scanDir+".zip"); err != nil {
-					return err
-				}
-				if err := os.RemoveAll(scanDir); err != nil {
-					return err
-				}
-				if err := toolkit.ZipExtract(scanDir+".zip", basepath); err != nil {
-					return err
-				}
-				if err := os.Remove(scanDir + ".zip"); err != nil {
-					return err
-				}
-			}
+		if strings.Compare(filename, "assets") == 0 {
+			assetPath = append(assetPath, _path)
+		}
+		return nil
+	}
+	if err = filepath.Walk(absRoot, walkFunc); err != nil {
+		if err.Error() == "found" {
+			return _path, nil
+		} else {
+			return "", err
 		}
 	}
 
-	return nil
+	for _, valIndex := range indexPath {
+		for _, valConfig := range configPath {
+			for _, valAsset := range assetPath {
+				if valIndex == valConfig && valConfig == valAsset {
+					_path = valConfig
+					break
+				}
+			}
+
+		}
+	}
+	return _path, nil
 }
 
-func (w *Widget) ExtractFile(compressedSource string, fileName string) error {
+func (w *Widget) ExtractFile(compressedSource string, fileName string) (toolkit.Ms, error) {
 	compressedFile := filepath.Join(compressedSource, fileName)
 	extractDest := filepath.Join(compressedSource, w.ID)
 
 	if err := os.RemoveAll(extractDest); err != nil {
-		return err
+		return nil, err
 	}
 
 	if strings.Contains(fileName, ".tar.gz") {
 		if err := toolkit.TarGzExtract(compressedFile, extractDest); err != nil {
-			return err
+			return nil, err
 		}
 	} else if strings.Contains(fileName, ".gz") {
 		if err := toolkit.GzExtract(compressedFile, extractDest); err != nil {
-			return err
+			return nil, err
 		}
 	} else if strings.Contains(fileName, ".tar") {
 		if err := toolkit.TarExtract(compressedFile, extractDest); err != nil {
-			return err
+			return nil, err
 		}
 	} else if strings.Contains(fileName, ".zip") {
 		if err := toolkit.ZipExtract(compressedFile, extractDest); err != nil {
-			return err
+			return nil, err
 		}
 	}
 
 	if err := os.Remove(compressedFile); err != nil {
-		return err
+		return nil, err
 	}
 
-	getConfigFile := filepath.Join(extractDest, "config.json")
+	path, err := GetPath(extractDest)
+	if err != nil {
+		return nil, err
+	}
+
+	urlPath := filepath.ToSlash(path)
+	splitPath := strings.SplitAfter(urlPath, "/data-root/widget/")
+	w.URL = strings.Join([]string{w.URL, "res-widget", splitPath[1]}, "/")
+
+	getConfigFile := filepath.Join(path, "config.json")
 	content, err := ioutil.ReadFile(getConfigFile)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	// contentstring := string(content)
-	var result = Config{}.data
-	toolkit.Unjson(content, &result)
-	toolkit.Println(result, string(content))
-	// checkDir(compressedSource, extractDest, w.ID)
+	result := toolkit.Ms{}
+	err = toolkit.Unjson(content, &result)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil
+	return result, nil
 }
 
 func (w *Widget) Delete(compressedSource string) error {
