@@ -21,3 +21,7 @@ func (a *Ldap) TableName() string {
 func (a *Ldap) RecordID() interface{} {
 	return a.ID
 }
+
+func (a *Ldap) RecordID2() interface{} {
+	return a.ID
+}
