@@ -116,8 +116,7 @@ func (g *Grid) RecordID() interface{} {
 }
 
 func (g *Grid) GetById() error {
-	err := Get(g, g.ID)
-	if err != nil {
+	if err := Get(g, g.ID); err != nil {
 		return err
 	}
 	return nil
