@@ -2,7 +2,7 @@ package colonycore
 
 import (
 	"github.com/eaciit/orm/v1"
-	_ "github.com/eaciit/toolkit"
+	//"github.com/eaciit/toolkit"
 )
 
 func (mn *Menu) TableName() string {
