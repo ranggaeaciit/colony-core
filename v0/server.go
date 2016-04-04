@@ -35,8 +35,3 @@ func (s *Server) TableName() string {
 func (s *Server) RecordID() interface{} {
 	return s.ID
 }
-
-type LanguageEnvironmentPayload struct {
-	ServerId string `json:"serverId"`
-	Lang     []string
-}
