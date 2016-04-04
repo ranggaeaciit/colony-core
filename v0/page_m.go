@@ -3,27 +3,27 @@ package colonycore
 import (
 	"github.com/eaciit/dbox"
 	"github.com/eaciit/orm/v1"
+	"github.com/eaciit/toolkit"
 )
 
 type Page struct {
 	orm.ModelBase
-	ID          string   `json:"_id"`
-	DataSources []string `json:"dataSources"`
-	// Panel       []*PanelPage `json:"panel"`
-	Widget     []*WidgetPage `json:"widget"`
-	ParentMenu string        `json:"parentMenu"`
-	Title      string        `json:"title"`
-	URL        string        `json:"url"`
-	ThemeColor string        `json:"themeColor"`
+	ID          string       `json:"_id"`
+	DataSources []string     `json:"dataSources"`
+	Panel       []*PanelPage `json:"panel"`
+	ParentMenu  string       `json:"parentMenu"`
+	Title       string       `json:"title"`
+	URL         string       `json:"url"`
+	ThemeColor  string       `json:"themeColor"`
 }
 
-/*type PanelPage struct {
+type PanelPage struct {
 	ID     string        `json:"_id"`
 	Title  string        `json:"title"`
 	Offset string        `json:"offset"`
 	Width  int           `json:"width"`
 	Widget []*WidgetPage `json:"widget"`
-}*/
+}
 
 type WidgetPage struct {
 	ID            string     `json:"_id"`
