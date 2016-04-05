@@ -3,24 +3,37 @@ package colonycore
 import (
 	"github.com/eaciit/dbox"
 	"github.com/eaciit/orm/v1"
+	"github.com/eaciit/toolkit"
 )
 
 type Page struct {
 	orm.ModelBase
-	ID         string     `json:"_id"`
-	PanelID    []*PanelID `json:"panelId"`
-	ParentMenu string     `json:"parentMenu"`
-	Title      string     `json:"title"`
-	URL        string     `json:"url"`
+	ID          string       `json:"_id"`
+	DataSources []string     `json:"dataSources"`
+	Panel       []*PanelPage `json:"panel"`
+	ParentMenu  string       `json:"parentMenu"`
+	Title       string       `json:"title"`
+	URL         string       `json:"url"`
+	ThemeColor  string       `json:"themeColor"`
 }
 
-type PanelID struct {
-	ID       string      `json:"_id"`
-	WidgetID []*WidgetID `json:"widgetId"`
+type PanelPage struct {
+	ID     string        `json:"_id"`
+	Title  string        `json:"title"`
+	Offset string        `json:"offset"`
+	Width  int           `json:"width"`
+	Widget []*WidgetPage `json:"widget"`
 }
 
-type WidgetID struct {
-	ID string `json:"_id"`
+type WidgetPage struct {
+	ID            string     `json:"_id"`
+	Title         string     `json:"title"`
+	WidgetType    string     `json:"widgetType"`
+	DataSourceID  string     `json:"dataSourceId"`
+	SettingWidget toolkit.Ms `json:"settingWidget"`
+	Height        int        `json:"height"`
+	Width         int        `json:"width"`
+	PanelWidgetID string     `json:"panelWidgetID"`
 }
 
 func (p *Page) TableName() string {
