@@ -1,6 +1,7 @@
 package colonycore
 
 import (
+	"errors"
 	"github.com/eaciit/dbox"
 	"github.com/eaciit/orm/v1"
 	"github.com/eaciit/toolkit"
@@ -139,6 +140,9 @@ func (w *Widget) ExtractFile(compressedSource string, fileName string) (toolkit.
 	}
 
 	path, err := GetPath(extractDest)
+	if path == "" {
+		return nil, errors.New("directory doesn't contains index.html")
+	}
 	if err != nil {
 		return nil, err
 	}
