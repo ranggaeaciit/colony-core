@@ -91,6 +91,29 @@ func (s *Server) Ping() (bool, error) {
 	return true, nil
 }
 
+func (s *Server) DetectInstalledLang() {
+	cursorLang, err := Find(new(LanguageEnviroment), nil)
+	if err == nil {
+		defer cursorLang.Close()
+
+		langs := []*LanguageEnviroment{}
+		err = cursorLang.Fetch(&langs, 0, false)
+		if err == nil {
+			for _, lang := range langs {
+				cmd := lang.Commands.GetString("version")
+				isExist, output, _ := s.IsCommandExists(cmd)
+
+				l := new(InstalledLang)
+				l.IsInstalled = isExist
+				l.Lang = lang.Language
+				l.Version = output
+
+				s.InstalledLang = append(s.InstalledLang, l)
+			}
+		}
+	}
+}
+
 type ServerLanguage struct {
 	ServerID   string
 	ServerOS   string
