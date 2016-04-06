@@ -1,9 +1,12 @@
 package colonycore
 
 import (
+	"errors"
+	"fmt"
 	"github.com/eaciit/orm/v1"
 	"github.com/eaciit/sshclient"
 	"golang.org/x/crypto/ssh"
+	"strings"
 )
 
 type Server struct {
@@ -55,6 +58,29 @@ func (s *Server) Connect() (sshclient.SshSetting, *ssh.Client, error) {
 	theClient, err := client.Connect()
 
 	return client, theClient, err
+}
+
+func (s *Server) IsCommandExists(cmd string) (bool, string, error) {
+	setting, _, err := s.Connect()
+	if err != nil {
+		return false, "", err
+	}
+
+	res, err := setting.RunCommandSshAsMap(fmt.Sprintf("which %s", cmd))
+	if err != nil {
+		return false, "", err
+	}
+
+	output := strings.TrimSpace(res[0].Output)
+	if output == "" {
+		return false, output, errors.New("command not found")
+	}
+
+	if resOutput, err := setting.RunCommandSshAsMap(cmd); err == nil {
+		output = resOutput[0].Output
+	}
+
+	return true, output, nil
 }
 
 func (s *Server) Ping() (bool, error) {
