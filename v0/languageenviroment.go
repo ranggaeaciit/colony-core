@@ -2,6 +2,7 @@ package colonycore
 
 import (
 	"github.com/eaciit/orm/v1"
+	"github.com/eaciit/toolkit"
 )
 
 type LanguageEnvironmentPayload struct {
@@ -12,13 +13,8 @@ type LanguageEnvironmentPayload struct {
 type LanguageEnviroment struct {
 	orm.ModelBase
 	Language  string       `json:"language", bson:"language"`
-	Commands  []*Commands  `json:commands, bson:"commands"`
+	Commands  toolkit.M    `json:commands, bson:"commands"`
 	Installer []*Installer `json:installer, bson:"installer"`
-}
-
-type Commands struct {
-	Name string `json:"name", bson:"name"`
-	Cmd  string `json:"cmd", bson:"cmd"`
 }
 
 type Installer struct {

@@ -1,9 +1,12 @@
 package colonycore
 
 import (
+	"errors"
+	"fmt"
 	"github.com/eaciit/orm/v1"
 	"github.com/eaciit/sshclient"
 	"golang.org/x/crypto/ssh"
+	"strings"
 )
 
 type Server struct {
@@ -57,12 +60,58 @@ func (s *Server) Connect() (sshclient.SshSetting, *ssh.Client, error) {
 	return client, theClient, err
 }
 
+func (s *Server) IsCommandExists(cmd string) (bool, string, error) {
+	setting, _, err := s.Connect()
+	if err != nil {
+		return false, "", err
+	}
+
+	res, err := setting.RunCommandSshAsMap(fmt.Sprintf("which %s", cmd))
+	if err != nil {
+		return false, "", err
+	}
+
+	output := strings.TrimSpace(res[0].Output)
+	if output == "" {
+		return false, output, errors.New("command not found")
+	}
+
+	if resOutput, err := setting.RunCommandSshAsMap(cmd); err == nil {
+		output = resOutput[0].Output
+	}
+
+	return true, output, nil
+}
+
 func (s *Server) Ping() (bool, error) {
 	if _, _, err := s.Connect(); err != nil {
 		return false, err
 	}
 
 	return true, nil
+}
+
+func (s *Server) DetectInstalledLang() {
+	cursorLang, err := Find(new(LanguageEnviroment), nil)
+	if err == nil {
+		defer cursorLang.Close()
+
+		langs := []*LanguageEnviroment{}
+		err = cursorLang.Fetch(&langs, 0, false)
+		if err == nil {
+			for _, lang := range langs {
+				cmd := lang.Commands.GetString("version")
+				isExist, output, _ := s.IsCommandExists(cmd)
+
+				l := new(InstalledLang)
+				l.IsInstalled = isExist
+				l.Lang = lang.Language
+				l.Version = output
+
+				s.InstalledLang = append(s.InstalledLang, l)
+			}
+		}
+	}
 }
 
 type ServerLanguage struct {
