@@ -21,22 +21,19 @@ func (a *Login) RecordID() interface{} {
 	return a.ID
 }
 
-func GetACLConnection() (dbox.IConnection, error) {
+func (a *Login) GetACLConnectionInfo() (string, *dbox.ConnectionInfo) {
 	conf, err := toolkit.ToM(GetConfig(CONF_DB_ACL))
 	if err != nil {
-		return nil, err
+		return "", nil
 	}
 
-	conn, err := dbox.NewConnection(conf.GetString("driver"), &dbox.ConnectionInfo{
+	ci := dbox.ConnectionInfo{
 		conf.GetString("host"),
 		conf.GetString("db"),
 		conf.GetString("user"),
 		conf.GetString("pass"),
 		toolkit.M{}.Set("timeout", 3),
-	})
-	if err != nil {
-		return nil, err
 	}
 
-	return conn, nil
+	return conf.GetString("host"), &ci
 }
