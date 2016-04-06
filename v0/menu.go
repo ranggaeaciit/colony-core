@@ -15,7 +15,7 @@ type Menu struct {
 }
 
 func (a *Menu) TableName() string {
-	return "menu"
+	return "menus"
 }
 
 func (a *Menu) RecordID() interface{} {
