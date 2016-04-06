@@ -84,8 +84,12 @@ func (s *Server) IsCommandExists(cmd string) (bool, string, error) {
 }
 
 func (s *Server) Ping() (bool, error) {
-	if _, _, err := s.Connect(); err != nil {
-		return false, err
+	if s.ServerType == "node" {
+		if _, _, err := s.Connect(); err != nil {
+			return false, err
+		}
+	} else {
+		return false, errors.New("not supported")
 	}
 
 	return true, nil
