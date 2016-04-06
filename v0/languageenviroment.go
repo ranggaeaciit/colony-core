@@ -34,8 +34,3 @@ func (le *LanguageEnviroment) TableName() string {
 func (le *LanguageEnviroment) RecordID() interface{} {
 	return le.Language
 }
-
-type ServerLanguage struct {
-	Server
-	Languages []LanguageEnviroment
-}
