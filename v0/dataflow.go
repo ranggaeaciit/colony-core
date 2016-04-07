@@ -10,8 +10,10 @@ import (
 		"strings"
 	    "github.com/eaciit/toolkit"
 	*/
-	"time"
+	"github.com/eaciit/orm/v1"
 	"github.com/eaciit/toolkit"
+	tk "github.com/eaciit/toolkit"
+	"time"
 )
 
 const (
@@ -26,7 +28,7 @@ const (
 	FORK_TYPE_ONE       = "ONE"
 	FORK_TYPE_MANDATORY = "MANDATORY"
 
-	SSH_OPERATION_MKDIR = "MKDIR"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+	SSH_OPERATION_MKDIR = "MKDIR"
 	// SSH_OPERATION_* please define
 )
 
@@ -34,12 +36,15 @@ const (
 // and also have the list of the actions inside the flow
 // Actions list of action, the content of the action can be FlowAction or "list of FlowAction" -> for fork action
 type DataFlow struct {
-	Id          string       `json:"_id"`
-	Name        string       `json:"name"`
-	Description string       `json:"description"`
-	CreatedDate time.Time    `json:"createddate"`
-	CreatedBy   string       `json:"createdby"`
-	Actions     []FlowAction `json:"actions"`
+	orm.ModelBase
+	ID           string       `json:"_id",bson:"_id"`
+	Name         string       `json:"name"`
+	Description  string       `json:"description"`
+	CreatedDate  time.Time    `json:"createddate"`
+	LastModified time.Time    `json:"lastmodified"`
+	CreatedBy    string       `json:"createdby"`
+	Actions      []FlowAction `json:"actions"`
+	DataShapes   tk.M         `json:"datashapes"`
 }
 
 // FlowAction define the action that exist
@@ -62,7 +67,7 @@ type FlowAction struct {
 	Retry       int         `json:"retry"`
 	Interval    int         `json:"interval"`
 	FirstAction bool
-	Context		ActionContext
+	Context     ActionContext
 }
 
 // ActionHive action for HIVE
@@ -182,7 +187,15 @@ type DataFlowProcess struct {
 	UserStarted string
 }
 
+func (c *DataFlow) TableName() string {
+	return "dataflow"
+}
+
+func (c *DataFlow) RecordID() interface{} {
+	return c.ID
+}
+
 type ActionContext struct {
-	Keys interface{}
+	Keys  interface{}
 	Infos []toolkit.M
 }
