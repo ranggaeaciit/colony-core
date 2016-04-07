@@ -11,6 +11,7 @@ import (
 	    "github.com/eaciit/toolkit"
 	*/
 	"github.com/eaciit/orm/v1"
+	"github.com/eaciit/toolkit"
 	tk "github.com/eaciit/toolkit"
 	"time"
 )
@@ -66,6 +67,7 @@ type FlowAction struct {
 	Retry       int         `json:"retry"`
 	Interval    int         `json:"interval"`
 	FirstAction bool
+	Context     ActionContext
 }
 
 // ActionHive action for HIVE
@@ -191,4 +193,9 @@ func (c *DataFlow) TableName() string {
 
 func (c *DataFlow) RecordID() interface{} {
 	return c.ID
+}
+
+type ActionContext struct {
+	Keys  interface{}
+	Infos []toolkit.M
 }
