@@ -1,21 +1,22 @@
 package colonycore
 
 import (
-	"github.com/eaciit/orm/v1" 
+	"github.com/eaciit/orm/v1"
 )
 
 type Application struct {
 	orm.ModelBase
-	ID         string `json:"_id",bson:"_id"`
-	AppsName   string
-	Port       string
-	Type       string
-	ZipName    string
-	Enable     bool
-	DeployedTo []string
-	Command    interface{}
-	Variable   interface{}
-
+	ID            string `json:"_id",bson:"_id"`
+	IsInternalApp bool
+	RunScript     map[string]string
+	AppsName      string
+	Port          string // for web type
+	Type          string
+	ZipName       string
+	Enable        bool
+	DeployedTo    []string
+	Command       interface{}
+	Variable      interface{}
 }
 
 func (a *Application) TableName() string {
