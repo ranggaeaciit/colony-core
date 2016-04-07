@@ -11,6 +11,7 @@ import (
 	    "github.com/eaciit/toolkit"
 	*/
 	"time"
+	"github.com/eaciit/toolkit"
 )
 
 const (
@@ -25,7 +26,7 @@ const (
 	FORK_TYPE_ONE       = "ONE"
 	FORK_TYPE_MANDATORY = "MANDATORY"
 
-	SSH_OPERATION_MKDIR = "MKDIR"
+	SSH_OPERATION_MKDIR = "MKDIR"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
 	// SSH_OPERATION_* please define
 )
 
@@ -61,6 +62,7 @@ type FlowAction struct {
 	Retry       int         `json:"retry"`
 	Interval    int         `json:"interval"`
 	FirstAction bool
+	Context		ActionContext
 }
 
 // ActionHive action for HIVE
@@ -178,4 +180,9 @@ type DataFlowProcess struct {
 	StartDate   time.Time
 	EndDate     time.Time
 	UserStarted string
+}
+
+type ActionContext struct {
+	Keys interface{}
+	Infos []toolkit.M
 }
