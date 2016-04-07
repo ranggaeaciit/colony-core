@@ -36,13 +36,14 @@ const (
 // Actions list of action, the content of the action can be FlowAction or "list of FlowAction" -> for fork action
 type DataFlow struct {
 	orm.ModelBase
-	ID          string       `json:"_id",bson:"_id"`
-	Name        string       `json:"name"`
-	Description string       `json:"description"`
-	CreatedDate time.Time    `json:"createddate"`
-	CreatedBy   string       `json:"createdby"`
-	Actions     []FlowAction `json:"actions"`
-	DataShapes  tk.M         `json:"datashapes"`
+	ID           string       `json:"_id",bson:"_id"`
+	Name         string       `json:"name"`
+	Description  string       `json:"description"`
+	CreatedDate  time.Time    `json:"createddate"`
+	LastModified time.Time    `json:"lastmodified"`
+	CreatedBy    string       `json:"createdby"`
+	Actions      []FlowAction `json:"actions"`
+	DataShapes   tk.M         `json:"datashapes"`
 }
 
 // FlowAction define the action that exist
