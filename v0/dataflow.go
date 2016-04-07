@@ -10,6 +10,8 @@ import (
 		"strings"
 	    "github.com/eaciit/toolkit"
 	*/
+	"github.com/eaciit/orm/v1"
+	tk "github.com/eaciit/toolkit"
 	"time"
 )
 
@@ -33,12 +35,14 @@ const (
 // and also have the list of the actions inside the flow
 // Actions list of action, the content of the action can be FlowAction or "list of FlowAction" -> for fork action
 type DataFlow struct {
-	Id          string       `json:"_id"`
+	orm.ModelBase
+	ID          string       `json:"_id",bson:"_id"`
 	Name        string       `json:"name"`
 	Description string       `json:"description"`
 	CreatedDate time.Time    `json:"createddate"`
 	CreatedBy   string       `json:"createdby"`
 	Actions     []FlowAction `json:"actions"`
+	DataShapes  tk.M         `json:"datashapes"`
 }
 
 // FlowAction define the action that exist
@@ -178,4 +182,12 @@ type DataFlowProcess struct {
 	StartDate   time.Time
 	EndDate     time.Time
 	UserStarted string
+}
+
+func (c *DataFlow) TableName() string {
+	return "dataflow"
+}
+
+func (c *DataFlow) RecordID() interface{} {
+	return c.ID
 }
