@@ -9,7 +9,15 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
+
+type MapPage struct {
+	orm.ModelBase
+	ID       string `json:"_id"`
+	Title    string `json:"title"`
+	FileName string `json:"fileName"`
+}
 
 type Page struct {
 	orm.ModelBase
@@ -23,17 +31,88 @@ type Page struct {
 }
 
 type WidgetPage struct {
-	ID           string     `json:"_id"`
-	WidgetID     string     `json:"widgetId"`
-	Title        string     `json:"title"`
-	DataSources  toolkit.Ms `json:"dataSources"`
-	ConfigWidget toolkit.Ms `json:"configWidget"`
-	Height       int        `json:"height"`
-	Width        int        `json:"width"`
+	ID            string     `json:"_id"`
+	WidgetID      string     `json:"widgetId"`
+	Title         string     `json:"title"`
+	DataSources   toolkit.Ms `json:"dataSources"`
+	ConfigWidget  toolkit.Ms `json:"configWidget"`
+	ConfigDefault toolkit.Ms `json:"configDefault"`
+	Position      string     `json:"position"`
+	Height        int        `json:"height"`
+	Width         int        `json:"width"`
+}
+
+func RandomIDWithPrefix(prefix string) string {
+	timestamp := time.Now().UnixNano() / int64(time.Millisecond)
+	return toolkit.Sprintf("%s%d", prefix, timestamp)
+}
+
+func (mp *MapPage) TableName() string {
+	return "pages"
+}
+
+func (mp *MapPage) RecordID() interface{} {
+	return mp.ID
+}
+
+func (mp *MapPage) Get(search string) ([]MapPage, error) {
+	var query *dbox.Filter
+
+	if search != "" {
+		query = dbox.Contains("_id", search)
+	}
+
+	data := []MapPage{}
+	cursor, err := Find(new(MapPage), query)
+	if err != nil {
+		return nil, err
+	}
+	if err := cursor.Fetch(&data, 0, false); err != nil {
+		return nil, err
+	}
+	defer cursor.Close()
+	return data, nil
+}
+
+func (mp *MapPage) GetById() error {
+	if err := Get(mp, mp.ID); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (mp *MapPage) Save(payload map[string]interface{}) error {
+	mp.ID = payload["_id"].(string)
+	mp.Title = payload["title"].(string)
+	mp.FileName = mp.ID + ".json"
+	page := new(Page)
+	page.ID = mp.ID
+	page.Title = mp.Title
+
+	// page.ParentMenu = payload["parentMenu"].(string)
+	// page.URL = payload["url"].(string)
+	if err := Save(mp); err != nil {
+		return err
+	}
+	if err := page.Save(payload, false); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (mp *MapPage) Delete(pagePath string) error {
+	jsonPath := filepath.Join(pagePath, mp.ID+".json")
+	if err := Delete(mp); err != nil {
+		return err
+	}
+	if err := os.Remove(jsonPath); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (p *Page) TableName() string {
-	return "pages"
+	return filepath.Join("pages", p.ID)
 }
 
 func (p *Page) RecordID() interface{} {
@@ -66,7 +145,36 @@ func (p *Page) GetById() error {
 	return nil
 }
 
-func (p *Page) Save() error {
+func (p *Page) Save(payload map[string]interface{}, isDesigner bool) error {
+	if isDesigner {
+		var wp WidgetPage
+		var wpArray []WidgetPage
+		p.ID = payload["_id"].(string)
+		if err := p.GetById(); err != nil {
+			return err
+		}
+		var datasources []string
+		for _, ds := range payload["dataSourceId"].([]interface{}) {
+			datasources = append(datasources, ds.(string))
+		}
+		p.DataSources = datasources
+		// page.ThemeColor = payload["themeColor"].(string)
+		// page.SendFiles(EC_DATA_PATH, payload["serverId"].(string))
+
+		/*if you get an error while saving page designer, simple, just comment following loop.. ahahay.. :D*/
+		for _, val := range payload["widget"].([]interface{}) {
+			wp = val.(WidgetPage)
+			wp.ID = RandomIDWithPrefix("wp")
+			widget := new(Widget)
+			widget.ID = wp.WidgetID
+			widget.GetById()
+			wp.ConfigDefault = widget.Config
+
+			wpArray = append(wpArray, wp)
+		}
+
+	}
+
 	if err := Save(p); err != nil {
 		return err
 	}
