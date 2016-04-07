@@ -147,8 +147,6 @@ func (p *Page) GetById() error {
 
 func (p *Page) Save(payload map[string]interface{}, isDesigner bool) error {
 	if isDesigner {
-		var wp WidgetPage
-		var wpArray []WidgetPage
 		p.ID = payload["_id"].(string)
 		if err := p.GetById(); err != nil {
 			return err
@@ -162,6 +160,8 @@ func (p *Page) Save(payload map[string]interface{}, isDesigner bool) error {
 		// page.SendFiles(EC_DATA_PATH, payload["serverId"].(string))
 
 		/*if you get an error while saving page designer, simple, just comment following loop.. ahahay.. :D*/
+		/*var wp WidgetPage
+		var wpArray []WidgetPage
 		for _, val := range payload["widget"].([]interface{}) {
 			wp = val.(WidgetPage)
 			wp.ID = RandomIDWithPrefix("wp")
@@ -171,7 +171,7 @@ func (p *Page) Save(payload map[string]interface{}, isDesigner bool) error {
 			wp.ConfigDefault = widget.Config
 
 			wpArray = append(wpArray, wp)
-		}
+		}*/
 
 	}
 
