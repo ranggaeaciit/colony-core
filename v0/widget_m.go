@@ -5,7 +5,6 @@ import (
 	"github.com/eaciit/dbox"
 	"github.com/eaciit/orm/v1"
 	"github.com/eaciit/toolkit"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -61,52 +60,22 @@ func (w *Widget) GetById() error {
 	return nil
 }
 
-func (w *Widget) Save() error {
+func (w *Widget) Save(extractDest string) error {
+	path, err := GetWidgetPath(extractDest)
+	if path == "" {
+		return errors.New("directory doesn't contains index.html")
+	}
+	if err != nil {
+		return err
+	}
+	urlPath := filepath.ToSlash(path)
+	splitPath := strings.SplitAfter(urlPath, "/data-root/widget/")
+	w.URL = strings.Join([]string{w.URL, "res-widget", splitPath[1]}, "/")
+
 	if err := Save(w); err != nil {
 		return err
 	}
 	return nil
-}
-
-func GetPath(root string) (string, error) {
-	absRoot, err := filepath.Abs(root)
-	if err != nil {
-		return "", err
-	}
-	var _path string
-	var indexPath []string
-	var configPath []string
-	var assetPath []string
-	walkFunc := func(path string, info os.FileInfo, err error) error {
-		_path, filename := filepath.Split(path)
-		if strings.Compare(filename, "index.html") == 0 {
-			indexPath = append(indexPath, _path)
-		}
-		if strings.Compare(filename, "config.json") == 0 {
-			configPath = append(configPath, _path)
-		}
-
-		if strings.Compare(filename, "assets") == 0 {
-			assetPath = append(assetPath, _path)
-		}
-		return nil
-	}
-	if err = filepath.Walk(absRoot, walkFunc); err != nil {
-		return "", err
-	}
-
-	for _, valIndex := range indexPath {
-		for _, valConfig := range configPath {
-			for _, valAsset := range assetPath {
-				if valIndex == valConfig && valConfig == valAsset {
-					_path = valConfig
-					break
-				}
-			}
-
-		}
-	}
-	return _path, nil
 }
 
 func (w *Widget) ExtractFile(compressedSource string, fileName string) (toolkit.Ms, error) {
@@ -139,7 +108,7 @@ func (w *Widget) ExtractFile(compressedSource string, fileName string) (toolkit.
 		return nil, err
 	}
 
-	path, err := GetPath(extractDest)
+	path, err := GetWidgetPath(extractDest)
 	if path == "" {
 		return nil, errors.New("directory doesn't contains index.html")
 	}
@@ -147,22 +116,11 @@ func (w *Widget) ExtractFile(compressedSource string, fileName string) (toolkit.
 		return nil, err
 	}
 
-	urlPath := filepath.ToSlash(path)
-	splitPath := strings.SplitAfter(urlPath, "/data-root/widget/")
-	w.URL = strings.Join([]string{w.URL, "res-widget", splitPath[1]}, "/")
-
 	getConfigFile := filepath.Join(path, "config.json")
-	content, err := ioutil.ReadFile(getConfigFile)
+	result, err := GetJsonFile(getConfigFile)
 	if err != nil {
 		return nil, err
 	}
-
-	result := toolkit.Ms{}
-	err = toolkit.Unjson(content, &result)
-	if err != nil {
-		return nil, err
-	}
-
 	return result, nil
 }
 

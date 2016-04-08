@@ -1,6 +1,7 @@
 package colonycore
 
 import (
+	"errors"
 	"github.com/eaciit/dbox"
 	"github.com/eaciit/orm/v1"
 	"github.com/eaciit/sshclient"
@@ -21,13 +22,13 @@ type MapPage struct {
 
 type Page struct {
 	orm.ModelBase
-	ID          string        `json:"_id"`
-	DataSources []string      `json:"dataSources"`
-	Widget      []*WidgetPage `json:"widget"`
-	ParentMenu  string        `json:"parentMenu"`
-	Title       string        `json:"title"`
-	URL         string        `json:"url"`
-	ThemeColor  string        `json:"themeColor"`
+	ID          string       `json:"_id"`
+	DataSources []string     `json:"dataSources"`
+	Widget      []WidgetPage `json:"widget"`
+	ParentMenu  string       `json:"parentMenu"`
+	Title       string       `json:"title"`
+	URL         string       `json:"url"`
+	ThemeColor  string       `json:"themeColor"`
 }
 
 type WidgetPage struct {
@@ -81,20 +82,20 @@ func (mp *MapPage) GetById() error {
 	return nil
 }
 
-func (mp *MapPage) Save(payload map[string]interface{}) error {
-	mp.ID = payload["_id"].(string)
-	mp.Title = payload["title"].(string)
+func (mp *MapPage) Save(payload toolkit.M) error {
+	mp.ID = payload.Get("_id", "").(string)
+	mp.Title = payload.Get("title", "").(string)
 	mp.FileName = mp.ID + ".json"
 	page := new(Page)
 	page.ID = mp.ID
 	page.Title = mp.Title
 
-	// page.ParentMenu = payload["parentMenu"].(string)
-	// page.URL = payload["url"].(string)
+	// page.ParentMenu = payload.Get("parentMenu", "").(string)
+	// page.URL = payload.Get("url", "").(string)
 	if err := Save(mp); err != nil {
 		return err
 	}
-	if err := page.Save(payload, false); err != nil {
+	if err := page.Save(payload, false, false, ""); err != nil {
 		return err
 	}
 	return nil
@@ -145,24 +146,67 @@ func (p *Page) GetById() error {
 	return nil
 }
 
-func (p *Page) Save(payload map[string]interface{}, isDesigner bool) error {
+func (p *Page) SaveNewWidget(payload toolkit.M, widgetPath string) ([]WidgetPage, error) {
+	var wpArray []WidgetPage
+	var wp WidgetPage
+	wp.ID = payload.Get("widgetPageId", "").(string)
+	wp.WidgetID = payload.Get("widgetId", "").(string)
+	widget := new(Widget)
+	widget.ID = wp.WidgetID
+	widget.GetById()
+	wp.ConfigDefault = widget.Config
+
+	extractDest := filepath.Join(widgetPath, widget.ID)
+	path, err := GetWidgetPath(extractDest)
+	if path == "" {
+		return nil, errors.New("directory doesn't contains index.html")
+	}
+	if err != nil {
+		return nil, err
+	}
+	getConfigFile := filepath.Join(path, "config-widget.json")
+	result, err := GetJsonFile(getConfigFile)
+	if err != nil {
+		return nil, err
+	}
+	if result != nil { /*going to select dataSources field only from config-widget.json*/
+		for _, value := range result[0].Get("dataSources").([]interface{}) {
+			wp.DataSources = append(wp.DataSources, value.(map[string]interface{}))
+		}
+	}
+	wpArray = append(wpArray, wp)
+	return wpArray, nil
+}
+
+func (p *Page) Save(payload toolkit.M, isDesigner bool, isNewWidget bool, widgetPath string) error {
 	if isDesigner {
-		p.ID = payload["_id"].(string)
+		p.ID = payload.Get("_id", "").(string)
 		if err := p.GetById(); err != nil {
 			return err
 		}
 		var datasources []string
-		for _, ds := range payload["dataSourceId"].([]interface{}) {
-			datasources = append(datasources, ds.(string))
+		var wpArray []WidgetPage
+		if payload.Get("dataSourceId") != nil { /*save configuration page*/
+			for _, ds := range payload.Get("dataSourceId", "").([]interface{}) {
+				datasources = append(datasources, ds.(string))
+			}
 		}
 		p.DataSources = datasources
-		// page.ThemeColor = payload["themeColor"].(string)
-		// page.SendFiles(EC_DATA_PATH, payload["serverId"].(string))
+		if isNewWidget { /*save new widget*/
+			var err error
+			wpArray, err = p.SaveNewWidget(payload, widgetPath)
+			if err != nil {
+				return err
+			}
+		}
+		p.Widget = wpArray
+		// page.ThemeColor = payload.Get("themeColor", "").(string)
+		// page.SendFiles(EC_DATA_PATH, payload.Get("serverId", "").(string))
 
 		/*if you get an error while saving page designer, simple, just comment following loop.. ahahay.. :D*/
 		/*var wp WidgetPage
 		var wpArray []WidgetPage
-		for _, val := range payload["widget"].([]interface{}) {
+		for _, val := range payload.Get("widget", "").([]interface{}) {
 			wp = val.(WidgetPage)
 			wp.ID = RandomIDWithPrefix("wp")
 			widget := new(Widget)
@@ -171,7 +215,9 @@ func (p *Page) Save(payload map[string]interface{}, isDesigner bool) error {
 			wp.ConfigDefault = widget.Config
 
 			wpArray = append(wpArray, wp)
-		}*/
+		}
+		p.Widget = wpArray
+		*/
 
 	}
 
@@ -181,10 +227,25 @@ func (p *Page) Save(payload map[string]interface{}, isDesigner bool) error {
 	return nil
 }
 
-func (p *Page) Delete() error {
-	if err := Delete(p); err != nil {
+func (p *Page) Delete(payload toolkit.M, path string) error {
+	p.ID = payload.Get("_id", "").(string)
+	if err := p.GetById(); err != nil {
 		return err
 	}
+	widget := p.Widget
+	p.Widget = nil
+	for _, val := range widget {
+		if payload.Get("widgetPageId", "") == val.ID {
+			continue
+		}
+		p.Widget = append(p.Widget, val)
+	}
+	if err := Save(p); err != nil {
+		return err
+	}
+	/*if err := Delete(p); err != nil {
+		return err
+	}*/
 	return nil
 }
 
