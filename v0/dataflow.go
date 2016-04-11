@@ -67,7 +67,7 @@ type FlowAction struct {
 	Retry       int         `json:"retry"`
 	Interval    int         `json:"interval"`
 	FirstAction bool
-	Context     ActionContext
+	Context     []ActionContext
 }
 
 // ActionHive action for HIVE
