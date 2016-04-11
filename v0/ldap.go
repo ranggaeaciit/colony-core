@@ -6,13 +6,13 @@ import (
 
 type Ldap struct {
 	orm.ModelBase
-	ID              string `json:"_id",bson:"_id"`
-	Address         string
-	BaseDN          string
-	FilterUser      string
-	FilterGroup     string
-	Username        string
-	Password        string
+	ID          string `json:"_id",bson:"_id"`
+	Address     string
+	BaseDN      string
+	FilterUser  string
+	FilterGroup string
+	Username    string
+	// Password        string
 	AttributesUser  []string
 	AttributesGroup []string
 }
