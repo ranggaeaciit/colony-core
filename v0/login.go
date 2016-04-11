@@ -35,5 +35,5 @@ func (a *Login) GetACLConnectionInfo() (string, *dbox.ConnectionInfo) {
 		toolkit.M{}.Set("timeout", 3),
 	}
 
-	return conf.GetString("host"), &ci
+	return conf.GetString("driver"), &ci
 }
