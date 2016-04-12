@@ -60,18 +60,7 @@ func (w *Widget) GetById() error {
 	return nil
 }
 
-func (w *Widget) Save(extractDest string) error {
-	path, err := GetWidgetPath(extractDest)
-	if path == "" {
-		return errors.New("directory doesn't contains index.html")
-	}
-	if err != nil {
-		return err
-	}
-	urlPath := filepath.ToSlash(path)
-	splitPath := strings.SplitAfter(urlPath, "/data-root/widget/")
-	w.URL = strings.Join([]string{w.URL, "res-widget", splitPath[1]}, "/")
-
+func (w *Widget) Save() error {
 	if err := Save(w); err != nil {
 		return err
 	}
@@ -115,6 +104,10 @@ func (w *Widget) ExtractFile(compressedSource string, fileName string) (toolkit.
 	if err != nil {
 		return nil, err
 	}
+
+	urlPath := filepath.ToSlash(path)
+	splitPath := strings.SplitAfter(urlPath, "/data-root/widget/")
+	w.URL = strings.Join([]string{w.URL, "res-widget", splitPath[1]}, "/")
 
 	getConfigFile := filepath.Join(path, "config.json")
 	result, err := GetJsonFile(getConfigFile)
