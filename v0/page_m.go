@@ -18,6 +18,7 @@ type MapPage struct {
 	ID       string `json:"_id"`
 	Title    string `json:"title"`
 	FileName string `json:"fileName"`
+	URL      string `json:"url"`
 }
 
 type Page struct {
@@ -84,10 +85,12 @@ func (mp *MapPage) GetById() error {
 func (mp *MapPage) Save(payload toolkit.M) error {
 	mp.ID = payload.Get("_id", "").(string)
 	mp.Title = payload.Get("title", "").(string)
+	mp.URL = payload.Get("url", "").(string)
 	mp.FileName = mp.ID + ".json"
 	page := new(Page)
 	page.ID = mp.ID
 	page.Title = mp.Title
+	page.URL = mp.URL
 
 	// page.ParentMenu = payload.Get("parentMenu", "").(string)
 	// page.URL = payload.Get("url", "").(string)
