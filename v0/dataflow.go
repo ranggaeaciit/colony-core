@@ -10,10 +10,11 @@ import (
 		"strings"
 	    "github.com/eaciit/toolkit"
 	*/
+	"time"
+
 	"github.com/eaciit/orm/v1"
 	"github.com/eaciit/toolkit"
 	tk "github.com/eaciit/toolkit"
-	"time"
 )
 
 const (
@@ -45,6 +46,25 @@ type DataFlow struct {
 	CreatedBy    string       `json:"createdby"`
 	Actions      []FlowAction `json:"actions"`
 	DataShapes   tk.M         `json:"datashapes"`
+	GlobalParam  tk.M
+}
+
+// ActionBridge, to define the input and output of the previous action and next action
+// PrevAction, ID of the previouse action
+// NextAction, ID of the next action
+// MappingParam, define the output and input paremeter name of the previous and next action
+//      e.g.:
+//              OUTPUT                INPUT
+//              "id"                : "id"
+//              "name"              : "name"
+//              "address"           : "note"
+//              "tag"               : "global.tag"
+//              "global.address"    : "address"
+type Bridge struct {
+	Id           string
+	PrevAction   string
+	NextAction   string
+	MappingParam tk.M
 }
 
 // FlowAction define the action that exist
@@ -67,7 +87,7 @@ type FlowAction struct {
 	Retry       int         `json:"retry"`
 	Interval    int         `json:"interval"`
 	FirstAction bool
-	Context     []ActionContext
+	Param       tk.M
 }
 
 // ActionHive action for HIVE
@@ -198,12 +218,12 @@ type ActionFork struct {
 }
 
 type DataFlowProcess struct {
-	Id          string `json:"_id"`
-	Flow        DataFlow
-	Steps       []FlowAction
-	StartDate   time.Time
-	EndDate     time.Time
-	UserStarted string
+	Id        string `json:"_id"`
+	Flow      DataFlow
+	Steps     []FlowAction
+	StartDate time.Time
+	EndDate   time.Time
+	StartedBy string
 }
 
 func (c *DataFlow) TableName() string {
