@@ -210,7 +210,16 @@ func (p *Page) Save(payload toolkit.M, isDesigner bool, widgetPath string) error
 			}
 		} else if mode == "save widget" {
 			if payload.Get("widget") != nil {
-				wp := payload.Get("widget").(*WidgetPage)
+				getwp := payload.Get("widget").(map[string]interface{})
+
+				wp := &WidgetPage{}
+				toolkit.UnjsonFromString(toolkit.JsonString(getwp), wp)
+				// toolkit.Println(wp, toolkit.JsonString(p))
+
+				p.ID = payload.Get("pageId", "").(string)
+				if err := p.GetById(); err != nil {
+					return err
+				}
 				widget := p.Widget
 				wpArray = nil
 				for _, val := range widget {
