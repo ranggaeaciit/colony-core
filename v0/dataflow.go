@@ -171,6 +171,25 @@ type Condition struct {
 	FlowAction string `json:"flowaction"`
 }
 
+type ActionStop struct {
+	Message string `json:"message"`
+}
+
+type ActionShellScript struct {
+	Script string `json:"script"`
+}
+
+type ActionJavaApp struct {
+	Jar       string `json:"jar"`
+	MainClass string `json:"mainclass"`
+}
+
+type ActionEmail struct {
+	To      string `json:"to"`
+	Subject string `json:"subject"`
+	Body    string `json:"body"`
+}
+
 // ActionFork to define the forking condition
 // Type refer to cons FORK_TYPE_*
 type ActionFork struct {
