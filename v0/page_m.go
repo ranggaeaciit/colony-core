@@ -190,8 +190,9 @@ func (p *Page) Save(payload toolkit.M, isDesigner bool, widgetPath string) error
 			for _, ds := range payload.Get("dataSourceId", "").([]interface{}) {
 				datasources = append(datasources, ds.(string))
 			}
+			p.DataSources = datasources
 		}
-		p.DataSources = datasources
+
 		var mode string
 		if payload.Get("mode") != nil {
 			mode = payload.Get("mode", "").(string)
@@ -217,7 +218,6 @@ func (p *Page) Save(payload toolkit.M, isDesigner bool, widgetPath string) error
 
 				wp := &WidgetPage{}
 				toolkit.UnjsonFromString(toolkit.JsonString(getwp), wp)
-				// toolkit.Println(wp, toolkit.JsonString(p))
 
 				p.ID = payload.Get("pageId", "").(string)
 				if err := p.GetById(); err != nil {
