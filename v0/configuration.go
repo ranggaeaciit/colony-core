@@ -11,7 +11,7 @@ const (
 
 type Configuration struct {
 	orm.ModelBase
-	Key   string `json:"_id",bson:"_id"`
+	ID    string `json:"_id",bson:"_id"`
 	Value interface{}
 }
 
@@ -20,7 +20,7 @@ func (a *Configuration) TableName() string {
 }
 
 func (a *Configuration) RecordID() interface{} {
-	return a.Key
+	return a.ID
 }
 
 func GetConfig(key string, args ...string) interface{} {
@@ -49,7 +49,7 @@ func GetConfig(key string, args ...string) interface{} {
 
 func SetConfig(key string, value interface{}) {
 	o := new(Configuration)
-	o.Key = key
+	o.ID = key
 	o.Value = value
 	Save(o)
 }
