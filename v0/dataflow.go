@@ -49,7 +49,7 @@ type DataFlow struct {
 	GlobalParam  tk.M
 }
 
-// ActionBridge, to define the input and output of the previous action and next action
+/*// ActionBridge, to define the input and output of the previous action and next action
 // PrevAction, ID of the previouse action
 // NextAction, ID of the next action
 // MappingParam, define the output and input paremeter name of the previous and next action
@@ -62,10 +62,11 @@ type DataFlow struct {
 //              "global.address"    : "address"
 type Bridge struct {
 	Id           string
+	Type         string
 	PrevAction   string
 	NextAction   string
 	MappingParam tk.M
-}
+}*/
 
 // FlowAction define the action that exist
 // Type refer to cons ACTION_TYPE_*
@@ -87,7 +88,9 @@ type FlowAction struct {
 	Retry       int         `json:"retry"`
 	Interval    int         `json:"interval"`
 	FirstAction bool
-	Param       tk.M
+	InputParam  tk.M
+	OutputParam tk.M
+	OutputType  string
 }
 
 // ActionHive action for HIVE
