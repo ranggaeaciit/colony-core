@@ -141,7 +141,8 @@ type ActionSpark struct {
 	File   string
 	// AppName   string
 	MainClass string
-	Args      []string
+	// Args      []string
+	Args string
 }
 
 // ActionSpark action for Application
@@ -167,7 +168,8 @@ type ActionHadoopStreaming struct {
 	Input   string
 	Output  string
 	Files   []string
-	Params  []string
+	// Params  []string
+	Params string
 }
 
 // ActionKafka action for KAFKA
