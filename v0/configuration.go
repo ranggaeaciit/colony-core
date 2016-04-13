@@ -11,8 +11,7 @@ const (
 
 type Configuration struct {
 	orm.ModelBase
-	ID    string `json:"_id",bson:"_id"`
-	Key   string
+	Key   string `json:"_id",bson:"_id"`
 	Value interface{}
 }
 
@@ -21,11 +20,11 @@ func (a *Configuration) TableName() string {
 }
 
 func (a *Configuration) RecordID() interface{} {
-	return a.ID
+	return a.Key
 }
 
 func GetConfig(key string) interface{} {
-	cursor, err := Find(new(Configuration), dbox.Eq("Key", key))
+	cursor, err := Find(new(Configuration), dbox.Eq("_id", key))
 	if err != nil {
 		return nil
 	}
