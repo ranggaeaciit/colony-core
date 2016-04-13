@@ -23,20 +23,25 @@ func (a *Configuration) RecordID() interface{} {
 	return a.Key
 }
 
-func GetConfig(key string) interface{} {
+func GetConfig(key string, args ...string) interface{} {
+	var res interface{} = nil
+	if len(args) > 0 {
+		res = args[0]
+	}
+
 	cursor, err := Find(new(Configuration), dbox.Eq("_id", key))
 	if err != nil {
-		return nil
+		return res
 	}
 
 	if cursor.Count() == 0 {
-		return nil
+		return res
 	}
 
 	data := Configuration{}
 	err = cursor.Fetch(&data, 1, false)
 	if err != nil {
-		return nil
+		return res
 	}
 
 	return data.Value
