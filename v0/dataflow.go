@@ -76,6 +76,9 @@ type Bridge struct {
 // KO next step to go if the result is KO or NOT OK or ERROR
 // Retry how many time the system will do the process if ERROR happen and then go to KO condition, default will be 3
 // Wait interval in minute, default will be 1
+// InputParam, will be the list of input that needed by the action
+// OutputParam, will be the list of output from the action
+// OutputType, will be the type of the output (text, json, *sv, xml)
 type FlowAction struct {
 	Id          string      `json:"_id"`
 	Name        string      `json:"name"`
@@ -221,12 +224,14 @@ type ActionFork struct {
 }
 
 type DataFlowProcess struct {
-	Id        string `json:"_id"`
-	Flow      DataFlow
-	Steps     []FlowAction
-	StartDate time.Time
-	EndDate   time.Time
-	StartedBy string
+	orm.ModelBase
+	Id          string `json:"_id"`
+	Flow        DataFlow
+	Steps       []FlowAction
+	StartDate   time.Time
+	EndDate     time.Time
+	StartedBy   string
+	GlobalParam tk.M
 }
 
 func (c *DataFlow) TableName() string {
