@@ -110,12 +110,13 @@ type ActionHive struct {
 // NewPath can be used for move, copy, etc
 // Permission e.g. rwx-r--r-
 type ActionHDFS struct {
-	Operation  string `json:"operation"`
+	/*Operation  string `json:"operation"`
 	Path       string `json:"path"`
 	NewPath    string `json:"newpath"`
 	Permission string
 	User       string
-	Group      string
+	Group      string*/
+	Command string
 }
 
 // ActionSSH action for SSH type of server
@@ -125,12 +126,7 @@ type ActionHDFS struct {
 // NewPath can be used for move, copy, etc
 // Permission e.g. rwx-r--r-
 type ActionSSH struct {
-	Operation  string `json:"operation"`
-	Path       string `json:"path"`
-	NewPath    string `json:"newpath"`
-	Permission string
-	User       string
-	Group      string
+	Command string
 }
 
 // ActionSpark action for SPARK
@@ -139,12 +135,13 @@ type ActionSSH struct {
 // Args for other arguments, e.g. --executor-memory 2G
 // Application the spark code will be mantain as application
 type ActionSpark struct {
-	Type        string `json: "type"`
-	Master      string
-	Mode        string
-	AppName     string
-	Args        []string
-	Application Application
+	Type   string `json: "type"`
+	Master string
+	Mode   string
+	File   string
+	// AppName   string
+	MainClass string
+	Args      []string
 }
 
 // ActionSpark action for Application
@@ -164,11 +161,13 @@ type ActionApplication struct {
 // Files list of file inside the hdfs
 // the server type should be hdfs
 type ActionHadoopStreaming struct {
+	Jar     string
 	Mapper  string
 	Reducer string
 	Input   string
 	Output  string
 	Files   []string
+	Params  []string
 }
 
 // ActionKafka action for KAFKA
@@ -206,8 +205,7 @@ type ActionShellScript struct {
 }
 
 type ActionJavaApp struct {
-	Jar       string `json:"jar"`
-	MainClass string `json:"mainclass"`
+	Jar string `json:"jar"`
 }
 
 type ActionEmail struct {
