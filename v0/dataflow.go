@@ -13,24 +13,23 @@ import (
 	"time"
 
 	"github.com/eaciit/orm/v1"
-	"github.com/eaciit/toolkit"
 	tk "github.com/eaciit/toolkit"
 )
 
 const (
-	ACTION_TYPE_HIVE     = "HIVE"
-	ACTION_TYPE_HDFS     = "HDFS"
-	ACTION_TYPE_SPARK    = "SPARK"
-	ACTION_TYPE_DECISION = "DECISION"
-	ACTION_TYPE_SSH      = "SSH"
-	ACTION_TYPE_KAFKA    = "KAFKA"
+/*ACTION_TYPE_HIVE     = "HIVE"
+ACTION_TYPE_HDFS     = "HDFS"
+ACTION_TYPE_SPARK    = "SPARK"
+ACTION_TYPE_DECISION = "DECISION"
+ACTION_TYPE_SSH      = "SSH"
+ACTION_TYPE_KAFKA    = "KAFKA"
 
-	FORK_TYPE_ALL       = "ALL"
-	FORK_TYPE_ONE       = "ONE"
-	FORK_TYPE_MANDATORY = "MANDATORY"
+FORK_TYPE_ALL       = "ALL"
+FORK_TYPE_ONE       = "ONE"
+FORK_TYPE_MANDATORY = "MANDATORY"
 
-	SSH_OPERATION_MKDIR = "MKDIR"
-	// SSH_OPERATION_* please define
+SSH_OPERATION_MKDIR = "MKDIR"*/
+// SSH_OPERATION_* please define
 )
 
 // DataFlow to define the flow name and description
@@ -47,6 +46,14 @@ type DataFlow struct {
 	Actions      []FlowAction `json:"actions"`
 	DataShapes   tk.M         `json:"datashapes"`
 	GlobalParam  tk.M
+}
+
+func (c *DataFlow) TableName() string {
+	return "dataflow"
+}
+
+func (c *DataFlow) RecordID() interface{} {
+	return c.ID
 }
 
 /*// ActionBridge, to define the input and output of the previous action and next action
@@ -79,6 +86,7 @@ type Bridge struct {
 // InputParam, will be the list of input that needed by the action
 // OutputParam, will be the list of output from the action
 // OutputType, will be the type of the output (text, json, *sv, xml)
+// OutputPath, path of the output in the hdfs if empty then consider as stdout
 type FlowAction struct {
 	Id          string      `json:"_id"`
 	Name        string      `json:"name"`
@@ -94,6 +102,7 @@ type FlowAction struct {
 	InputParam  tk.M
 	OutputParam tk.M
 	OutputType  string
+	OutputPath  string
 }
 
 // ActionHive action for HIVE
@@ -234,15 +243,10 @@ type DataFlowProcess struct {
 	GlobalParam tk.M
 }
 
-func (c *DataFlow) TableName() string {
-	return "dataflow"
+func (c *DataFlowProcess) TableName() string {
+	return "dataflowprocess"
 }
 
-func (c *DataFlow) RecordID() interface{} {
-	return c.ID
-}
-
-type ActionContext struct {
-	Keys  interface{}
-	Infos []toolkit.M
+func (c *DataFlowProcess) RecordID() interface{} {
+	return c.Id
 }
