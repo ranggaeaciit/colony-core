@@ -221,6 +221,7 @@ type ActionJavaApp struct {
 
 type ActionEmail struct {
 	To      string `json:"to"`
+	CC      string `json:"to"`
 	Subject string `json:"subject"`
 	Body    string `json:"body"`
 }
