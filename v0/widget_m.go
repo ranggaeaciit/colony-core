@@ -1,10 +1,12 @@
 package colonycore
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/eaciit/dbox"
 	"github.com/eaciit/orm/v1"
 	"github.com/eaciit/toolkit"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -127,4 +129,43 @@ func (w *Widget) Delete(compressedSource string) error {
 		return err
 	}
 	return nil
+}
+
+func (w *Widget) GetConfigWidget() (toolkit.M, error) {
+	result := toolkit.M{}
+
+	if err := w.GetById(); err != nil {
+		return result, err
+	}
+
+	widgetBasePath := filepath.Join(os.Getenv("EC_DATA_PATH"), "widget", w.ID)
+	err := filepath.Walk(widgetBasePath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if info.Name() == "config-widget.json" {
+			bytes, err := ioutil.ReadFile(path)
+			if err != nil {
+				return err
+			}
+
+			data := []toolkit.M{}
+			if err := json.Unmarshal(bytes, &data); err != nil {
+				return err
+			}
+
+			if len(data) > 0 {
+				result = data[0]
+			}
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return result, err
+	}
+
+	return result, nil
 }
