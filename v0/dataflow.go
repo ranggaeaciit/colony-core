@@ -45,7 +45,7 @@ type DataFlow struct {
 	CreatedBy    string       `json:"createdby"`
 	Actions      []FlowAction `json:"actions"`
 	DataShapes   tk.M         `json:"datashapes"`
-	GlobalParam  tk.M
+	GlobalParam  tk.M         `json:"globaalparam"`
 }
 
 func (c *DataFlow) TableName() string {
@@ -98,18 +98,18 @@ type FlowAction struct {
 	KO          []string    `json:"ko"`
 	Retry       int         `json:"retry"`
 	Interval    int         `json:"interval"`
-	FirstAction bool
-	InputParam  tk.M
-	OutputParam tk.M
-	OutputType  string
-	OutputPath  string
+	FirstAction bool        `json:"firstaction"`
+	InputParam  tk.M        `json:"inputparam"`
+	OutputParam tk.M        `json:"outputparam"`
+	OutputType  string      `json:"outputtype"`
+	OutputPath  string      `json:"outputtype"`
 }
 
 // ActionHive action for HIVE
 // ScriptPath path of the hive script to run
 type ActionHive struct {
-	ScriptPath string
-	Params     []string
+	ScriptPath string   `json:"scrippath"`
+	Params     []string `json:"params"`
 }
 
 // ActionHDFS action for HDFS type for server
@@ -125,7 +125,7 @@ type ActionHDFS struct {
 	Permission string
 	User       string
 	Group      string*/
-	Command string
+	Command string `json:"command"`
 }
 
 // ActionSSH action for SSH type of server
@@ -135,7 +135,7 @@ type ActionHDFS struct {
 // NewPath can be used for move, copy, etc
 // Permission e.g. rwx-r--r-
 type ActionSSH struct {
-	Command string
+	Command string `json:"command"`
 }
 
 // ActionSpark action for SPARK
@@ -144,14 +144,14 @@ type ActionSSH struct {
 // Args for other arguments, e.g. --executor-memory 2G
 // Application the spark code will be mantain as application
 type ActionSpark struct {
-	Type   string `json: "type"`
-	Master string
-	Mode   string
-	File   string
+	Type      string `json: "type"`
+	Master    string `json:"master"`
+	Mode      string `json:"node"`
+	File      string `json:"file"`
+	MainClass string `json:"mainclass"`
+	Args      string `json:"args"`
 	// AppName   string
-	MainClass string
 	// Args      []string
-	Args string
 }
 
 // ActionSpark action for Application
@@ -159,8 +159,8 @@ type ActionSpark struct {
 // Application refer to application page
 // when creating the action with type = application then should follow the application screen standard
 type ActionApplication struct {
-	Type        string `json: "type"`
-	Application Application
+	Type        string      `json: "type"`
+	Application Application `json:"application"`
 }
 
 // ActionHadoopStreaming for hadoop streaming
@@ -171,14 +171,14 @@ type ActionApplication struct {
 // Files list of file inside the hdfs
 // the server type should be hdfs
 type ActionHadoopStreaming struct {
-	Jar     string
-	Mapper  string
-	Reducer string
-	Input   string
-	Output  string
-	Files   []string
+	Jar     string   `json:"jar"`
+	Mapper  string   `json:"mapper"`
+	Reducer string   `json:"reducer"`
+	Input   string   `json:"input"`
+	Output  string   `json:"output"`
+	Files   []string `json:"files"`
 	// Params  []string
-	Params string
+	Params string `json:"params"`
 }
 
 // ActionKafka action for KAFKA
@@ -235,13 +235,13 @@ type ActionFork struct {
 
 type DataFlowProcess struct {
 	orm.ModelBase
-	Id          string `json:"_id"`
-	Flow        DataFlow
-	Steps       []FlowAction
-	StartDate   time.Time
-	EndDate     time.Time
-	StartedBy   string
-	GlobalParam tk.M
+	Id          string       `json:"_id"`
+	Flow        DataFlow     `json:"dataflow"`
+	Steps       []FlowAction `json:"flowaction"`
+	StartDate   time.Time    `json:"startdate"`
+	EndDate     time.Time    `json:"enddate"`
+	StartedBy   string       `json:"startedby"`
+	GlobalParam tk.M         `json:"globalparam"`
 }
 
 func (c *DataFlowProcess) TableName() string {
