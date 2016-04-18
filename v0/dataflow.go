@@ -198,6 +198,7 @@ type ActionQuestion struct {
 // ActionDecision action to define the list of decision that action have
 type ActionDecision struct {
 	Conditions []Condition `json:"conditions"`
+	IsFork     bool        `json:"isfork"`
 	// other field will be different for each action type
 }
 
