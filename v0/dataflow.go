@@ -203,7 +203,7 @@ type ActionDecision struct {
 
 // Condition condition for the action decision
 type Condition struct {
-	Result     string `json:"result"`
+	Stat       string `json:"stat"`
 	FlowAction string `json:"flowaction"`
 }
 
@@ -221,7 +221,7 @@ type ActionJavaApp struct {
 
 type ActionEmail struct {
 	To      string `json:"to"`
-	CC      string `json:"to"`
+	Cc      string `json:"cc"`
 	Subject string `json:"subject"`
 	Body    string `json:"body"`
 }
