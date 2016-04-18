@@ -45,7 +45,7 @@ type DataFlow struct {
 	CreatedBy    string       `json:"createdby"`
 	Actions      []FlowAction `json:"actions"`
 	DataShapes   tk.M         `json:"datashapes"`
-	GlobalParam  tk.M         `json:"globaalparam"`
+	GlobalParam  tk.M         `json:"globalparam"`
 }
 
 func (c *DataFlow) TableName() string {
