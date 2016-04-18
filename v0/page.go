@@ -1,7 +1,7 @@
 package colonycore
 
 import (
-	"errors"
+	// "errors"
 	"github.com/eaciit/dbox"
 	"github.com/eaciit/orm/v1"
 	// "github.com/eaciit/sshclient"
@@ -148,16 +148,12 @@ func (pd *PageDetail) Get() (toolkit.M, error) {
 		return nil, err
 	}
 
-	res := []toolkit.M{}
+	res := toolkit.M{}
 	if err := json.Unmarshal(bytes, &res); err != nil {
 		return nil, err
 	}
 
-	if len(res) == 0 {
-		return nil, errors.New("no data found")
-	}
-
-	return res[0], nil
+	return res, nil
 }
 
 func (pd *PageDetail) RecordID() interface{} {
