@@ -63,16 +63,16 @@ type PageDetail struct {
 }
 
 type WidgetPage struct {
-	ID           string     `json:"_id"`
-	WidgetID     string     `json:"widgetId"`
-	Title        string     `json:"title"`
-	PositionType string     `json:"position"`
-	X            int        `json:"x"`
-	Y            int        `json:"y"`
-	Height       int        `json:"height"`
-	Width        int        `json:"width"`
-	DataSources  toolkit.Ms `json:"dataSources"`
-	Config       toolkit.Ms `json:"configDefault"`
+	ID           string    `json:"_id"`
+	WidgetID     string    `json:"widgetId"`
+	Title        string    `json:"title"`
+	PositionType string    `json:"position"`
+	X            int       `json:"x"`
+	Y            int       `json:"y"`
+	Height       int       `json:"height"`
+	Width        int       `json:"width"`
+	DataSources  toolkit.M `json:"dataSources"`
+	Config       toolkit.M `json:"config"`
 }
 
 // func RandomIDWithPrefix(prefix string) string {
