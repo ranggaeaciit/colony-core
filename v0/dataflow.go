@@ -234,6 +234,7 @@ type ActionFork struct {
 	Type    string       `json: "type"`
 }
 
+// status, running - success - error
 type DataFlowProcess struct {
 	orm.ModelBase
 	Id          string       `json:"_id"`
@@ -243,6 +244,7 @@ type DataFlowProcess struct {
 	EndDate     time.Time    `json:"enddate"`
 	StartedBy   string       `json:"startedby"`
 	GlobalParam tk.M         `json:"globalparam"`
+	Status      string       `json:"status"`
 }
 
 func (c *DataFlowProcess) TableName() string {
