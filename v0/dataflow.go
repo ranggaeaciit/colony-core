@@ -144,7 +144,7 @@ type ActionSSH struct {
 // Args for other arguments, e.g. --executor-memory 2G
 // Application the spark code will be mantain as application
 type ActionSpark struct {
-	Type      string `json: "type"`
+	Type      string `json:"type"`
 	Master    string `json:"master"`
 	Mode      string `json:"node"`
 	File      string `json:"file"`
@@ -235,16 +235,17 @@ type ActionFork struct {
 }
 
 // status, running - success - error
+// steps should be the list of the action(FlowAction) that have been run
 type DataFlowProcess struct {
 	orm.ModelBase
-	Id          string       `json:"_id"`
-	Flow        DataFlow     `json:"dataflow"`
-	Steps       []FlowAction `json:"flowaction"`
-	StartDate   time.Time    `json:"startdate"`
-	EndDate     time.Time    `json:"enddate"`
-	StartedBy   string       `json:"startedby"`
-	GlobalParam tk.M         `json:"globalparam"`
-	Status      string       `json:"status"`
+	Id          string        `json:"_id"`
+	Flow        DataFlow      `json:"flow"`
+	Steps       []interface{} `json:"steps"`
+	StartDate   time.Time     `json:"startdate"`
+	EndDate     time.Time     `json:"enddate"`
+	StartedBy   string        `json:"startedby"`
+	GlobalParam tk.M          `json:"globalparam"`
+	Status      string        `json:"status"`
 }
 
 func (c *DataFlowProcess) TableName() string {
