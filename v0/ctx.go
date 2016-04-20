@@ -64,11 +64,8 @@ func Find(o orm.IModel, filter *dbox.Filter) (dbox.ICursor, error) {
 	return c, nil
 }
 
-func Finds(o orm.IModel, filter *dbox.Filter, param toolkit.M) (dbox.ICursor, error) {
+func Finds(o orm.IModel, param toolkit.M) (dbox.ICursor, error) {
 	var filters []*dbox.Filter
-	if filter != nil {
-		filters = append(filters, filter)
-	}
 
 	params := toolkit.M{}
 	params.Set("where", filters)
@@ -81,6 +78,10 @@ func Finds(o orm.IModel, filter *dbox.Filter, param toolkit.M) (dbox.ICursor, er
 	}
 	if qe := param.Get("take", nil); qe != nil {
 		params.Set("limit", qe.(int))
+	}
+	if qe := param.Get("where", nil); qe != nil {
+		filters = append(filters, qe.(*dbox.Filter))
+		params.Set("where", filters)
 	}
 
 	c, e := ctx().Find(o, params)
