@@ -63,3 +63,29 @@ func Find(o orm.IModel, filter *dbox.Filter) (dbox.ICursor, error) {
 	}
 	return c, nil
 }
+
+func Finds(o orm.IModel, filter *dbox.Filter, param toolkit.M) (dbox.ICursor, error) {
+	var filters []*dbox.Filter
+	if filter != nil {
+		filters = append(filters, filter)
+	}
+
+	params := toolkit.M{}
+	params.Set("where", filters)
+
+	if qe := param.Get("order", nil); qe != nil {
+		params.Set("order", qe.([]string))
+	}
+	if qe := param.Get("skip", nil); qe != nil {
+		params.Set("skip", qe.(int))
+	}
+	if qe := param.Get("take", nil); qe != nil {
+		params.Set("limit", qe.(int))
+	}
+
+	c, e := ctx().Find(o, params)
+	if e != nil {
+		return nil, errors.New("Core.Find: " + e.Error())
+	}
+	return c, nil
+}
