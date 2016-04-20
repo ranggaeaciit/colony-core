@@ -23,6 +23,7 @@ const (
 
 type FileBrowserPayload struct {
 	ServerId   string           `json:"serverId"`
+	ServerType string           `json:"serverType"`
 	Path       string           `json:"path"`
 	Search     string           `json:"search"`
 	Contents   string           `json:"contents"`
