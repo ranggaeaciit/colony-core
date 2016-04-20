@@ -46,7 +46,6 @@ type DataFlow struct {
 	Actions      []FlowAction `json:"actions"`
 	DataShapes   tk.M         `json:"datashapes"`
 	GlobalParam  tk.M         `json:"globalparam"`
-	Percentage   int          `json:"pct"`
 }
 
 func (c *DataFlow) TableName() string {
