@@ -246,6 +246,7 @@ type DataFlowProcess struct {
 	StartedBy   string        `json:"startedby"`
 	GlobalParam tk.M          `json:"globalparam"`
 	Status      string        `json:"status"`
+	Percentage  int           `json:"pct"`
 }
 
 func (c *DataFlowProcess) TableName() string {
