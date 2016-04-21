@@ -240,7 +240,7 @@ func (s *Server) DetectService() {
 }
 
 func (s *Server) IsAccessValid(what string) bool {
-	if what == "ssh" {
+	if what == "node" {
 		if s.ServiceSSH.Type == "Credentials" {
 			return (s.ServiceSSH.Host != "") && (s.ServiceSSH.User != "")
 		} else {
