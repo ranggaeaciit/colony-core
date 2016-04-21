@@ -126,8 +126,8 @@ func (s *Server) IsCommandExists(cmd string) (bool, string, error) {
 	return true, output, nil
 }
 
-func (s *Server) Ping(serverType string) (bool, error) {
-	if serverType == "node" {
+func (s *Server) Ping(serviceType string) (bool, error) {
+	if serviceType == "ssh" {
 		if _, _, err := s.Connect(); err != nil {
 			return false, err
 		}
