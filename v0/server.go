@@ -148,6 +148,16 @@ func (s *Server) Ping(serviceType string) (bool, error) {
 	return true, nil
 }
 
+func (s *Server) IsLangInstalled(lang string) bool {
+	for _, each := range s.InstalledLang {
+		if each.Lang == lang {
+			return each.IsInstalled
+		}
+	}
+
+	return false
+}
+
 func (s *Server) DetectInstalledLang() {
 	cursorLang, err := Find(new(LanguageEnviroment), nil)
 	if err == nil {
