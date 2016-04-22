@@ -33,7 +33,8 @@ type Server struct {
 	CmdCopy    string `json:"cmdcopy", bson:"cmdcopy"`
 	CmdMkDir   string `json:"cmdmkdir", bson:"cmdmkdir"`
 
-	InstalledLang []*InstalledLang `json:"installedLang", bson:"installedLang"`
+	InstalledLang  []*InstalledLang `json:"installedLang", bson:"installedLang"`
+	IsColonyServer bool             `json:"isColonyServer", bson:"isColonyServer"`
 
 	/* DEPRECATED */
 
@@ -43,6 +44,16 @@ type Server struct {
 	// SSHUser   string       `json:"sshuser", bson:"sshuser"`
 	// SSHPass   string       `json:"sshpass", bson:"sshpass"`
 	// HostAlias []*HostAlias `json:"hostAlias", bson:"hostAlias"`
+}
+
+func NewServer() *Server {
+	s := new(Server)
+	s.ServiceHDFS = new(ServiceHDFS)
+	s.ServiceHDFS.HostAlias = make([]*HostAlias, 0)
+	s.ServiceSSH = new(ServiceSSH)
+	s.InstalledLang = make([]*InstalledLang, 0)
+
+	return s
 }
 
 type ServerByType struct {
