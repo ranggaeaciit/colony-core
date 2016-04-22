@@ -144,13 +144,13 @@ func (pd *PageDetail) TableName() string {
 	return filepath.Join(basePath, "config", "pages", fileName)
 }
 
-func (pd *PageDetail) Get() (toolkit.M, error) {
+func (pd *PageDetail) Get() (*PageDetail, error) {
 	bytes, err := ioutil.ReadFile(pd.TableName())
 	if err != nil {
 		return nil, err
 	}
 
-	res := toolkit.M{}
+	res := new(PageDetail)
 	if err := json.Unmarshal(bytes, &res); err != nil {
 		return nil, err
 	}
