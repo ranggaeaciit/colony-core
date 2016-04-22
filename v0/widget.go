@@ -3,24 +3,22 @@ package colonycore
 import (
 	"encoding/json"
 	"errors"
-	"github.com/eaciit/dbox"
-	"github.com/eaciit/orm/v1"
-	"github.com/eaciit/toolkit"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/eaciit/dbox"
+	"github.com/eaciit/orm/v1"
+	"github.com/eaciit/toolkit"
 )
 
 type Widget struct {
 	orm.ModelBase
-	ID           string     `json:"_id"`
-	Title        string     `json:"title"`
-	DataSourceId []string   `json:"dataSourceId"`
-	Description  string     `json:"description"`
-	Config       toolkit.Ms `json:"config"`
-	Params       toolkit.M  `json:"params"`
-	URL          string     `json:"url"`
+	ID          string     `json:"_id"`
+	Title       string     `json:"title"`
+	Description string     `json:"description"`
+	Config      toolkit.Ms `json:"config"`
 }
 
 type DataSourceWidget struct {
@@ -107,10 +105,6 @@ func (w *Widget) ExtractFile(compressedSource string, fileName string) (toolkit.
 		return nil, err
 	}
 
-	urlPath := filepath.ToSlash(path)
-	splitPath := strings.SplitAfter(urlPath, "/data-root/widget/")
-	w.URL = strings.Join([]string{w.URL, "res-widget", splitPath[1]}, "/")
-
 	getConfigFile := filepath.Join(path, "config.json")
 	result, err := GetJsonFile(getConfigFile)
 	if err != nil {
@@ -150,13 +144,8 @@ func (w *Widget) GetConfigWidget() (toolkit.M, error) {
 				return err
 			}
 
-			data := []toolkit.M{}
-			if err := json.Unmarshal(bytes, &data); err != nil {
+			if err := json.Unmarshal(bytes, &result); err != nil {
 				return err
-			}
-
-			if len(data) > 0 {
-				result = data[0]
 			}
 		}
 
