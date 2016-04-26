@@ -25,8 +25,9 @@ type Server struct {
 	AppPath  string `json:"appPath", bson:"appPath"`
 	DataPath string `json:"dataPath", bson:"dataPath"`
 
-	ServiceSSH  *ServiceSSH  `json:"serviceSSH", json:"serviceSSH"`
-	ServiceHDFS *ServiceHDFS `json:"serviceHDFS", json:"serviceHDFS"`
+	ServiceSSH    *ServiceSSH      `json:"serviceSSH", bson:"serviceSSH"`
+	ServiceHDFS   *ServiceHDFS     `json:"serviceHDFS", bson:"serviceHDFS"`
+	OtherServices []*ServerService `json:"serverServices", bson:"serverServices"`
 
 	CmdExtract string `json:"cmdextract", bson:"cmdextract"`
 	CmdNewFile string `json:"cmdnewfile", bson:"cmdnewfile"`
@@ -50,6 +51,7 @@ func NewServer() *Server {
 	s := new(Server)
 	s.ServiceHDFS = new(ServiceHDFS)
 	s.ServiceHDFS.HostAlias = make([]*HostAlias, 0)
+	s.OtherServices = make([]*ServerService, 0)
 	s.ServiceSSH = new(ServiceSSH)
 	s.InstalledLang = make([]*InstalledLang, 0)
 
@@ -782,6 +784,28 @@ func (s *Server) ToggleSedotanService(op string, id string) (bool, error) {
 	return isOn, nil
 }
 
+func (s *Server) DetectInstalledServices() error {
+	services, err := new(ServerService).GetAll()
+	if err != nil {
+		return err
+	}
+
+	s.OtherServices = make([]*ServerService, 0)
+
+	for _, service := range services {
+		ava, err := service.IsServiceAvailable(s)
+		if err != nil {
+			return err
+		}
+
+		service.IsInstalled = ava
+		s.OtherServices = append(s.OtherServices, &service)
+		Save(s)
+	}
+
+	return nil
+}
+
 type ServerLanguage struct {
 	ServerID   string
 	ServerOS   string
@@ -793,4 +817,51 @@ type InstalledLang struct {
 	Lang        string
 	Version     string
 	IsInstalled bool
+}
+
+type ServerService struct {
+	orm.ModelBase
+	ID          string `json:"_id", bson:"_id"`
+	Name        string `json:"name", bson:"name"`
+	IsInstalled bool   `json:"isInstalled", bson:"isInstalled"`
+}
+
+func (s *ServerService) TableName() string {
+	return "server-services"
+}
+
+func (s *ServerService) RecordID() interface{} {
+	return s.ID
+}
+
+func (s *ServerService) GetAll() ([]ServerService, error) {
+	cursor, err := Find(s, nil)
+	if err != nil {
+		return []ServerService{}, err
+	}
+
+	res := []ServerService{}
+	if err = cursor.Fetch(&res, 0, true); err != nil {
+		return []ServerService{}, err
+	}
+
+	return res, nil
+}
+
+func (s *ServerService) IsServiceAvailable(server *Server) (bool, error) {
+	setting, _, err := server.Connect()
+	if err != nil {
+		return false, err
+	}
+
+	res, err := setting.RunCommandSshAsMap(server.ID)
+	if err != nil {
+		return false, err
+	}
+
+	if strings.TrimSpace(res[0].Output) != "" {
+		return false, nil
+	}
+
+	return true, nil
 }
