@@ -18,9 +18,8 @@ import (
 
 type Server struct {
 	orm.ModelBase
-	ID   string `json:"_id", bson:"_id"`
-	OS   string `json:"os", bson:"os"`
-	Host string `json:"host", bson:"host"`
+	ID string `json:"_id", bson:"_id"`
+	OS string `json:"os", bson:"os"`
 
 	AppPath  string `json:"appPath", bson:"appPath"`
 	DataPath string `json:"dataPath", bson:"dataPath"`
