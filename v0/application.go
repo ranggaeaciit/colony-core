@@ -1,8 +1,21 @@
 package colonycore
 
 import (
-	"github.com/eaciit/orm/v1"
+	"errors"
+	"fmt"
 	"strings"
+	"time"
+
+	"github.com/eaciit/dbox"
+	"github.com/eaciit/orm/v1"
+)
+
+const (
+	App_Command_Start         = "start"
+	App_Command_Stop          = "stop"
+	App_Command_RunningStatus = "running_status"
+	App_Command_DeployStatus  = "deploy_status"
+	App_Variable_BinaryName   = "BINARY_NAME"
 )
 
 type Application struct {
@@ -70,10 +83,95 @@ func (a *Application) GetCommand(cmdName string) (bool, string) {
 	return true, cmdString
 }
 
-const (
-	App_Command_Start         = "start"
-	App_Command_Stop          = "stop"
-	App_Command_RunningStatus = "running_status"
-	App_Command_DeployStatus  = "deploy_status"
-	App_Variable_BinaryName   = "BINARY_NAME"
-)
+func (a *Application) GetAllInternalApps() ([]Application, error) {
+	cursor, err := Find(a, dbox.Eq("IsInternalApp", true))
+	if err != nil {
+		return nil, err
+	}
+
+	data := make([]Application, 0)
+	err = cursor.Fetch(&data, 0, true)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
+func (a *Application) UpdateDeployedInfo(serverID string, mode string) error {
+	cache := make(map[string]bool, 0)
+	deployedTo := make([]string, 0)
+
+	for _, each := range a.DeployedTo {
+		if _, ok := cache[each]; ok {
+			continue
+		}
+
+		if each == serverID {
+			continue
+		}
+
+		cache[each] = true
+		deployedTo = append(deployedTo, each)
+	}
+
+	if mode == "add" {
+		deployedTo = append(deployedTo, serverID)
+	}
+
+	a.DeployedTo = deployedTo
+	return Save(a)
+}
+
+func (a *Application) RunApp(server *Server) (bool, error) {
+	sshSetting, _, err := server.Connect()
+	if err != nil {
+		return false, err
+	}
+
+	runWithTimeout := func(cmd string) (string, error) {
+		timeout := time.Second * time.Duration(5)
+		cRunCommand := make(chan string, 1)
+		var res string
+
+		go func(res *string) {
+			temp, err := sshSetting.RunCommandSshAsMap(cmd)
+			*res = temp[0].Output
+
+			if err != nil {
+				cRunCommand <- err.Error()
+			} else {
+				cRunCommand <- ""
+			}
+		}(&res)
+
+		errorMessage := ""
+		select {
+		case receiveRunCommandOutput := <-cRunCommand:
+			errorMessage = receiveRunCommandOutput
+		case <-time.After(time.Second * time.Duration(timeout)):
+			errorMessage = ""
+		}
+
+		if strings.TrimSpace(errorMessage) != "" {
+			return "", errors.New(errorMessage)
+		}
+
+		return strings.TrimSpace(res), nil
+	}
+
+	cmdRun := fmt.Sprintf("cd $EC_APP_PATH/web && chmod 755 %s && ./%s &", a.ID, a.ID)
+	output, err := runWithTimeout(cmdRun)
+	if err != nil {
+		return false, err
+	}
+
+	cmdPID := fmt.Sprintf("pidof %s", a.ID)
+	output, err = runWithTimeout(cmdPID)
+	if err != nil {
+		return false, err
+	}
+
+	isRun := (strings.TrimSpace(output) != "")
+	return isRun, nil
+}
