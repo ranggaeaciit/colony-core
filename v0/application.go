@@ -1,7 +1,10 @@
 package colonycore
 
 import (
+	"errors"
+	"fmt"
 	"strings"
+	"time"
 
 	"github.com/eaciit/dbox"
 	"github.com/eaciit/orm/v1"
@@ -118,4 +121,57 @@ func (a *Application) UpdateDeployedInfo(serverID string, mode string) error {
 
 	a.DeployedTo = deployedTo
 	return Save(a)
+}
+
+func (a *Application) RunApp(server *Server) (bool, error) {
+	sshSetting, _, err := server.Connect()
+	if err != nil {
+		return false, err
+	}
+
+	runWithTimeout := func(cmd string) (string, error) {
+		timeout := time.Second * time.Duration(5)
+		cRunCommand := make(chan string, 1)
+		var res string
+
+		go func(res *string) {
+			temp, err := sshSetting.RunCommandSshAsMap(cmd)
+			*res = temp[0].Output
+
+			if err != nil {
+				cRunCommand <- err.Error()
+			} else {
+				cRunCommand <- ""
+			}
+		}(&res)
+
+		errorMessage := ""
+		select {
+		case receiveRunCommandOutput := <-cRunCommand:
+			errorMessage = receiveRunCommandOutput
+		case <-time.After(time.Second * time.Duration(timeout)):
+			errorMessage = ""
+		}
+
+		if strings.TrimSpace(errorMessage) != "" {
+			return "", errors.New(errorMessage)
+		}
+
+		return strings.TrimSpace(res), nil
+	}
+
+	cmdRun := fmt.Sprintf("cd $EC_APP_PATH/web && chmod 755 %s && ./%s &", a.ID, a.ID)
+	output, err := runWithTimeout(cmdRun)
+	if err != nil {
+		return false, err
+	}
+
+	cmdPID := fmt.Sprintf("pidof %s", a.ID)
+	output, err = runWithTimeout(cmdPID)
+	if err != nil {
+		return false, err
+	}
+
+	isRun := (strings.TrimSpace(output) != "")
+	return isRun, nil
 }
