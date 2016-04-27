@@ -1,8 +1,18 @@
 package colonycore
 
 import (
-	"github.com/eaciit/orm/v1"
 	"strings"
+
+	"github.com/eaciit/dbox"
+	"github.com/eaciit/orm/v1"
+)
+
+const (
+	App_Command_Start         = "start"
+	App_Command_Stop          = "stop"
+	App_Command_RunningStatus = "running_status"
+	App_Command_DeployStatus  = "deploy_status"
+	App_Variable_BinaryName   = "BINARY_NAME"
 )
 
 type Application struct {
@@ -70,10 +80,42 @@ func (a *Application) GetCommand(cmdName string) (bool, string) {
 	return true, cmdString
 }
 
-const (
-	App_Command_Start         = "start"
-	App_Command_Stop          = "stop"
-	App_Command_RunningStatus = "running_status"
-	App_Command_DeployStatus  = "deploy_status"
-	App_Variable_BinaryName   = "BINARY_NAME"
-)
+func (a *Application) GetAllInternalApps() ([]Application, error) {
+	cursor, err := Find(a, dbox.Eq("IsInternalApp", true))
+	if err != nil {
+		return nil, err
+	}
+
+	data := make([]Application, 0)
+	err = cursor.Fetch(&data, 0, true)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
+func (a *Application) UpdateDeployedInfo(serverID string, mode string) error {
+	cache := make(map[string]bool, 0)
+	deployedTo := make([]string, 0)
+
+	for _, each := range a.DeployedTo {
+		if _, ok := cache[each]; ok {
+			continue
+		}
+
+		if each == serverID {
+			continue
+		}
+
+		cache[each] = true
+		deployedTo = append(deployedTo, each)
+	}
+
+	if mode == "add" {
+		deployedTo = append(deployedTo, serverID)
+	}
+
+	a.DeployedTo = deployedTo
+	return Save(a)
+}

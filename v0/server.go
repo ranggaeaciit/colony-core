@@ -864,3 +864,11 @@ func (s *ServerService) IsServiceAvailable(server *Server) (bool, error) {
 
 	return true, nil
 }
+
+func (s *Server) UpdateInternalAppDeploymentStatus(mode string) {
+	apps, _ := new(Application).GetAllInternalApps()
+
+	for _, app := range apps {
+		app.UpdateDeployedInfo(s.ID, mode)
+	}
+}
