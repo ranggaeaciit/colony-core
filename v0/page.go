@@ -60,6 +60,7 @@ type PageDetail struct {
 	Title       string        `json:"title"`
 	URL         string        `json:"url"`
 	ThemeColor  string        `json:"themeColor"`
+	StyleSheet  string        `json:"styleSheet"`
 }
 
 type WidgetPage struct {
