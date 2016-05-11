@@ -16,7 +16,7 @@ func GetPath(root string, _filename string) ([]string, error) {
 	var pathList []string
 	walkFunc := func(path string, info os.FileInfo, err error) error {
 		_path, filename := filepath.Split(path)
-		if strings.Compare(filename, _filename) == 0 {
+		if filename == _filename {
 			pathList = append(pathList, _path)
 		}
 		return nil
